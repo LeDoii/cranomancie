@@ -74,6 +74,21 @@ def display_lines(readings: list[dict]) -> list[tuple[str, bool]]:
             for r in readings]
 
 
+def conclusion_items(readings: list[dict]) -> list[dict]:
+    """The conclusion split in four lines (tone, then one per axis), each copiable on its own.
+
+    display: text on screen (no polarity wording, the colour says it); favorable: None for the tone;
+    spoken: chat text; me: /me text (the game prepends "l'individu").
+    """
+    tone_text = tone(readings)
+    items = [{"display": tone_text, "favorable": None, "spoken": tone_text,
+              "me": DATA["me_synthesis_prefix"] + _lower_first(tone_text)}]
+    for r_, (display, favorable) in zip(readings, display_lines(readings)):
+        items.append({"display": display, "favorable": favorable, "spoken": detail_line(r_),
+                      "me": "précise : " + detail_line(r_)})
+    return items
+
+
 def synthesize_me(spoken: str) -> str:
     """Third-person version for /me (the game prepends "l'individu")."""
     return DATA["me_synthesis_prefix"] + _lower_first(spoken)

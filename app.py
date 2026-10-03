@@ -236,38 +236,31 @@ class AxisPanel:
 
 
 class ReadingView(tk.Frame):
-    """The three axes and the closing synthesis."""
-
-    def _on_foot_resize(self, event: tk.Event) -> None:
-        for label in [self.synthesis] + self.detail_labels:
-            label.config(wraplength=max(300, event.width - 40))
-
-    def show_conclusion(self, tone_text: str, lines: list[tuple[str, bool]] | None) -> None:
-        """Tone (or the /me preview) and, when given, the coloured axis lines."""
-        self.synthesis.config(text=tone_text)
-        for label in self.detail_labels:
-            label.pack_forget()
-        for label, (text, favorable) in zip(self.detail_labels, lines or []):
-            label.config(text=text, fg=GOOD if favorable else ALERT)
-            label.pack(anchor="w", fill="x", pady=1, before=self.buttons)
+    """The three axes and the closing conclusion, one row (text + Copy button) per line."""
 
     def __init__(self, parent: tk.Widget, app: "App") -> None:
         super().__init__(parent, bg=BG)
+        self.app = app
         f = app.fonts
         foot = tk.Frame(self, bg=PANEL, padx=18, pady=10)
         foot.pack(side="bottom", padx=21, pady=(4, 10), fill="x")
         tk.Label(foot, text="CONCLUSION", font=f["label"], bg=PANEL, fg=WARM).pack(anchor="w")
-        self.synthesis = tk.Label(foot, text="", font=f["body"], bg=PANEL, fg=TEXT, wraplength=1180,
-                                  justify="left", anchor="w")
-        self.synthesis.pack(anchor="w", pady=4, fill="x")
-        # One coloured line per axis (green = favorable, red = unfavorable); hidden in /me preview mode.
-        self.detail_labels = [tk.Label(foot, text="", font=f["body"], bg=PANEL, fg=TEXT, justify="left", anchor="w",
-                                       wraplength=1180) for _ in range(3)]
+        self.rows = []  # (frame, label, copy button) x4: tone, Lignes, Imperfections, Forme
+        for _ in range(4):
+            row = tk.Frame(foot, bg=PANEL)
+            row.pack(fill="x", pady=2)
+            button = tk.Button(row, text="Copier", font=f["label_s"], bg=BG, fg=TEXT, activebackground=WARM,
+                               relief="flat", padx=10, pady=2)
+            button.pack(side="right", padx=(10, 0))
+            label = tk.Label(row, text="", font=f["body"], bg=PANEL, fg=TEXT, wraplength=1100, justify="left",
+                             anchor="w")
+            label.pack(side="left", fill="x", expand=True)
+            self.rows.append((row, label, button))
         foot.bind("<Configure>", self._on_foot_resize)
-        self.buttons = tk.Frame(foot, bg=PANEL)
-        self.buttons.pack(anchor="w")
-        buttons = self.buttons
-        self.copy_synth = tk.Button(buttons, text="Copier la conclusion", font=f["label_s"], bg=BG, fg=TEXT,
+        buttons = tk.Frame(foot, bg=PANEL)
+        buttons.pack(anchor="w", pady=(4, 0))
+        self.buttons = buttons  # rows are always packed above this frame
+        self.copy_synth = tk.Button(buttons, text="Tout copier (une ligne)", font=f["label_s"], bg=BG, fg=TEXT,
                                     relief="flat", padx=10, pady=4, state="disabled", command=app.copy_synthesis)
         self.copy_synth.pack(side="left", padx=(0, 8))
         tk.Button(buttons, text="Nouvelle lecture", font=f["label_s"], bg=BG, fg=TEXT, relief="flat", padx=10,
@@ -275,7 +268,6 @@ class ReadingView(tk.Frame):
 
         cols = tk.Frame(self, bg=BG)
         cols.pack(padx=14, pady=6, fill="both", expand=True)
-        self.foot = foot
         cols.grid_rowconfigure(0, weight=1)
         self.panels = []
         for i in range(3):
@@ -283,6 +275,33 @@ class ReadingView(tk.Frame):
             panel.frame.grid(row=0, column=i, padx=7, sticky="nsew")
             cols.grid_columnconfigure(i, weight=1, uniform="axes")
             self.panels.append(panel)
+
+    def _on_foot_resize(self, event: tk.Event) -> None:
+        for _, label, _ in self.rows:
+            label.config(wraplength=max(300, event.width - 190))
+
+    def show_placeholder(self, text: str) -> None:
+        """Before the three readings are complete: one message, no copy buttons."""
+        for i, (row, label, button) in enumerate(self.rows):
+            if i == 0:
+                label.config(text=text, fg=TEXT)
+                button.pack_forget()
+                row.pack_forget()
+                row.pack(fill="x", pady=2, before=self.buttons)
+            else:
+                row.pack_forget()
+
+    def show_items(self, items: list[dict], me_mode: bool) -> None:
+        """One row per conclusion line: green / red for the axes, its own Copy button."""
+        for (row, label, button), item in zip(self.rows, items):
+            text = "l'individu " + item["me"] if me_mode else item["display"]
+            color = TEXT if item["favorable"] is None else (GOOD if item["favorable"] else ALERT)
+            label.config(text=text, fg=color)
+            button.config(command=lambda i=item: self.app.copy_text(i["spoken"], i["me"]))
+            button.pack_forget()
+            button.pack(side="right", padx=(10, 0), before=label)
+            row.pack_forget()
+            row.pack(fill="x", pady=2, before=self.buttons)
 
 
 class App:
@@ -348,7 +367,6 @@ class App:
         for view in self.views.values():
             view.grid(row=0, column=0, sticky="nsew")
         self.panels = self.reading_view.panels
-        self.synthesis = self.reading_view.synthesis
         self.copy_synth = self.reading_view.copy_synth
 
         self.synthesis_spoken = ""
@@ -467,14 +485,11 @@ class App:
         done = [p.result for p in self.panels if p.result]
         if len(done) == 3:
             self.synthesis_spoken = reading.synthesize(done)
-            if self.me_prefix.get():  # /me preview = the exact one-line chat text
-                self.reading_view.show_conclusion("l'individu " + reading.synthesize_me(self.synthesis_spoken), None)
-            else:  # tone, then one line per axis, green or red
-                self.reading_view.show_conclusion(reading.tone(done), reading.display_lines(done))
+            self.reading_view.show_items(reading.conclusion_items(done), self.me_prefix.get())
             self.copy_synth.config(state="normal")
         else:
             self.synthesis_spoken = ""
-            self.reading_view.show_conclusion("Entrez les trois jets, puis lancez la polarité de chaque axe.", None)
+            self.reading_view.show_placeholder("Entrez les trois jets, puis lancez la polarité de chaque axe.")
             self.copy_synth.config(state="disabled")
 
     def randomize_all(self) -> None:
