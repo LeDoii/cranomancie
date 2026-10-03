@@ -1,4 +1,4 @@
-# Cranomancie v2 : lecture du crâne chauve façon chiromancie
+# CRANOMANTIE 2000 (Cranomancie v2) : lecture du crâne chauve façon chiromancie
 
 Petit outil de jeu de rôle pour **Elixir RP** : la lecture du crâne chauve selon Oswald Bald. Trois jets `/roll 1-20` (un par axe : Lignes, Imperfections, Forme) désignent chacun un signe, puis un jet de polarité décide si sa lecture est favorable ou défavorable.
 
@@ -9,7 +9,7 @@ Tout le contenu (guide d'Oswald Bald, signes, définitions, phrases) est de l'**
 1. Téléchargez le zip `cranomancie-v2.x.y.zip` dans les [releases](../../releases) (choisissez une release « v2 ») et décompressez-le.
 2. Double-cliquez sur `cranomancie.bat`.
 
-Si Python est absent, `cranomancie.bat` propose de l'installer avec `winget`. La v2 n'a aucune autre dépendance. La fenêtre s'ouvre sans console ; en cas de plantage, la cause est écrite dans `crash.log`.
+Au premier lancement, `cranomancie.bat` installe seul ce qui manque : Python (proposition d'installation via `winget` s'il est absent) et Pillow (`requirements.txt`, pour l'image de Viktor). La fenêtre s'ouvre sans console ; en cas de plantage, la cause est écrite dans `crash.log`.
 
 ## Utilisation
 
@@ -18,6 +18,7 @@ Si Python est absent, `cranomancie.bat` propose de l'installer avec `winget`. La
 - **Polarité** : le bouton « Lancer la polarité » de chaque axe fait un jet de 1 à 20 : pair = lecture favorable, impair = défavorable. Il peut être relancé. Avec la case **Polarité manuelle**, le jet est fait par un autre joueur en jeu et vous saisissez son résultat.
 - **Aléatoire** (par axe) et **Tout tirer au hasard** tirent le jet et la polarité.
 - **Conclusion** : quatre lignes, chacune avec son propre bouton **Copier** (un message de chat par ligne) : une phrase selon le nombre d'axes favorables, puis une ligne par axe (signe et définition), en vert si l'axe est favorable et en rouge s'il est défavorable. Le texte copié écrit la polarité en toutes lettres (le chat n'a pas de couleurs). **Tout copier** met l'ensemble sur une seule ligne.
+- **Viktor** : une illustration de Viktor tenant une boule de cristal apparaît en filigrane derrière les trois panneaux (case « Viktor » pour la masquer).
 - **Bibliothèque des signes** : les 60 signes, recherche (numéro, signe, mot-clé), volet de détail avec les deux définitions. Un clic sur un signe depuis la lecture y mène.
 - **Copier la phrase** prépare le texte à dire en jeu. Avec l'option **Format /me**, la phrase est réécrite à la troisième personne et copiée avec `/me` devant : le jeu ajoute lui-même « l'individu ».
 

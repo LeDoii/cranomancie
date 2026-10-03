@@ -15,14 +15,19 @@ if not defined PY if exist "%LOCALAPPDATA%\Programs\Python\Python312\python.exe"
 )
 if not defined PY goto :nopython
 
-rem --- the only requirement is tkinter, which ships with Python (no pip install needed) ---
-%PY% -c "import tkinter" >nul 2>nul
+rem --- install missing requirements (Pillow for the Viktor picture; tkinter ships with Python) ---
+%PY% -c "import PIL, tkinter" >nul 2>nul
 if errorlevel 1 (
-  echo.
-  echo Il manque un composant de Python : "tkinter".
-  echo Reinstallez Python en cochant l'option "tcl/tk and IDLE", puis relancez cranomancie.bat.
-  pause
-  exit /b 1
+  echo Installation des dependances necessaires...
+  %PY% -m pip install --disable-pip-version-check -r requirements.txt
+  %PY% -c "import tkinter" >nul 2>nul
+  if errorlevel 1 (
+    echo.
+    echo Il manque un composant de Python : "tkinter".
+    echo Reinstallez Python en cochant l'option "tcl/tk and IDLE", puis relancez cranomancie.bat.
+    pause
+    exit /b 1
+  )
 )
 
 start "" %PYW% app.py

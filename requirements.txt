@@ -1,1 +1,1 @@
-# Aucune dépendance externe : la v2 n'utilise que la bibliothèque standard de Python (tkinter).
+Pillow>=10.0

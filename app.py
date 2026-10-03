@@ -16,14 +16,8 @@ from tkinter import font as tkfont
 import reading
 import updater
 from library import SignsView
-
-BG = "#1B1A18"
-PANEL = "#26241F"
-TEXT = "#E7E0D1"
-MUTED = "#948B78"
-WARM = "#D9803A"
-ALERT = "#E0705A"
-GOOD = "#8DBF6A"
+from reading_view import AxisPanel, ReadingView
+from widgets import ALERT, BG, GOOD, MUTED, PANEL, TEXT, WARM
 
 FONTS = Path(__file__).resolve().parent / "fonts"
 # Font sizes at scale 1.0 (window around 1500x1000); everything scales with the window.
@@ -43,272 +37,11 @@ def pick_family(candidates: list[str], fallback: str) -> str:
     return next((c for c in candidates if c in available), fallback)
 
 
-class NumberField(tk.Frame):
-    """Roll entry with a double arrow (click to step), arrow keys / wheel and a dice button."""
-
-    def __init__(self, parent: tk.Widget, app: "App", var: tk.StringVar, caption: str, lo: int, hi: int):
-        super().__init__(parent, bg=PANEL)
-        self.app, self.var, self.lo, self.hi = app, var, lo, hi
-        f = app.fonts
-        tk.Label(self, text=caption, font=f["label_s"], bg=PANEL, fg=MUTED).pack()
-        row = tk.Frame(self, bg=PANEL)
-        row.pack()
-        self.entry = tk.Entry(row, textvariable=var, width=4, justify="center", font=f["entry"], bg=BG, fg=TEXT,
-                              insertbackground=TEXT, relief="flat", highlightthickness=1,
-                              highlightbackground=MUTED, highlightcolor=WARM)
-        self.entry.pack(side="left")
-        arrows = tk.Frame(row, bg=PANEL)
-        arrows.pack(side="left", padx=(2, 0))
-        for symbol, step in (("▲", 1), ("▼", -1)):
-            tk.Button(arrows, text=symbol, font=f["label_s"], bg=BG, fg=TEXT, activebackground=WARM,
-                      relief="flat", padx=3, pady=0, bd=0, command=lambda s=step: self.step(s)).pack(fill="x")
-        tk.Button(row, text="🎲", font=f["emoji"], bg=PANEL, fg=TEXT, activebackground=WARM, relief="flat",
-                  bd=0, padx=4, command=self.roll).pack(side="left", padx=(4, 0))
-        for keys, step in (("<Up> <Right>", 1), ("<Down> <Left>", -1)):
-            for key in keys.split():
-                self.entry.bind(key, lambda _e, s=step: self._key(s))
-        self.entry.bind("<MouseWheel>", lambda e: self._key(1 if e.delta > 0 else -1))
-        self.entry.bind("<KeyRelease>", lambda _e: app.refresh())
-
-    def _key(self, step: int) -> str:
-        self.step(step)
-        return "break"  # keep the caret still
-
-    def step(self, delta: int) -> None:
-        """+1/-1 within [lo, hi]; an empty or invalid field starts at the matching bound."""
-        try:
-            value = int(self.var.get().strip())
-        except ValueError:
-            value = self.lo - 1 if delta > 0 else self.hi + 1
-        self.var.set(str(max(self.lo, min(self.hi, value + delta))))
-        self.app.refresh()
-
-    def roll(self) -> None:
-        self.var.set(str(random.randint(self.lo, self.hi)))
-        self.app.refresh()
-
-
-class AxisPanel:
-    """d20 input, observed sign, manual polarity roll and reading of one axis."""
-
-    def __init__(self, app: "App", parent: tk.Widget, index: int):
-        self.app, self.index = app, index
-        axis = reading.AXES[index]
-        self.frame = tk.Frame(parent, bg=PANEL, padx=14, pady=10)
-        f = app.fonts
-        tk.Label(self.frame, text=axis["label"].upper(), font=f["label"], bg=PANEL, fg=WARM).pack()
-        tk.Label(self.frame, text=axis["nom"], font=f["title_s"], bg=PANEL, fg=TEXT).pack()
-        self.question = tk.Label(self.frame, text=axis["question"], font=f["small"], bg=PANEL, fg=MUTED,
-                                 wraplength=300, height=2)
-        self.question.pack(pady=(0, 6))
-
-        self.var = tk.StringVar()
-        self.field = NumberField(self.frame, app, self.var, "Jet (1-20)", 1, 20)
-        self.field.pack()
-
-        self.sign_label = tk.Label(self.frame, text="", font=f["title_s"], bg=PANEL, fg=TEXT, wraplength=300,
-                                   justify="center", cursor="hand2")
-        self.sign_label.pack(pady=(14, 6), fill="x")
-        self.sign_label.bind("<Button-1>", lambda _e: self.open_detail())
-        self.observe = tk.Label(self.frame, text="", font=f["small"], bg=PANEL, fg=MUTED, wraplength=300)
-        self.observe.pack()
-
-        self.pol_box = tk.Frame(self.frame, bg=PANEL)
-        self.pol_box.pack(pady=(14, 4))
-        self.polarity_btn = tk.Button(self.pol_box, text="🎲 Lancer la polarité", font=f["label_s"], bg=BG, fg=TEXT,
-                                      activebackground=WARM, relief="flat", padx=12, pady=6, state="disabled",
-                                      command=lambda: app.roll_polarity(self))
-        self.pol_var = tk.StringVar()
-        self.pol_field = NumberField(self.pol_box, app, self.pol_var, "Polarité (/roll 1-20 du 2e joueur)", 1, 20)
-        self._show_polarity_input()
-        self.polarity_label = tk.Label(self.frame, text="", font=f["label"], bg=PANEL, fg=MUTED)
-        self.polarity_label.pack()
-
-        self.phrase = tk.Label(self.frame, text="", font=f["body"], bg=PANEL, fg=TEXT, wraplength=330,
-                               justify="left")
-        self.phrase.pack(pady=8, fill="x")
-        btns = tk.Frame(self.frame, bg=PANEL)
-        btns.pack()
-        self.copy_btn = tk.Button(btns, text="Copier la phrase", font=f["label_s"], bg=BG, fg=TEXT,
-                                  activebackground=WARM, relief="flat", padx=10, pady=4, command=self.copy,
-                                  state="disabled")
-        self.copy_btn.pack(side="left", padx=4)
-        tk.Button(btns, text="Aléatoire", font=f["label_s"], bg=BG, fg=TEXT, activebackground=WARM, relief="flat",
-                  padx=10, pady=4, command=lambda: (self.randomize_full(), app.refresh())).pack(side="left", padx=4)
-        self.error = tk.Label(self.frame, text="", font=f["small"], bg=PANEL, fg=ALERT, wraplength=320)
-        self.error.pack(pady=(4, 0))
-
-        self.roll = None        # validated d20 result
-        self.polarity = None    # None until rolled, else (ui roll, favorable)
-        self.result = None      # full reading once the polarity is rolled
-        self.frame.bind("<Configure>", self._on_resize)
-
-    def _show_polarity_input(self) -> None:
-        """Button (UI rolls the polarity) or entry field (the second player rolls it in game)."""
-        manual = self.app.manual_polarity.get()
-        self.polarity_btn.pack_forget()
-        self.pol_field.pack_forget()
-        (self.pol_field if manual else self.polarity_btn).pack()
-
-    def _on_resize(self, event: tk.Event) -> None:
-        wrap = max(180, event.width - 40)
-        for label in (self.phrase, self.question, self.error, self.sign_label, self.observe):
-            label.config(wraplength=wrap)
-
-    def randomize_full(self) -> None:
-        """Random d20 and random polarity roll for this axis."""
-        self.roll = random.randint(1, 20)  # set first so update() keeps the polarity below
-        self.var.set(str(self.roll))
-        self.polarity = reading.roll_polarity()
-        if self.app.manual_polarity.get():
-            self.pol_var.set(str(self.polarity[0]))  # show the rolled value in the entry
-
-    def open_detail(self) -> None:
-        if self.roll:
-            self.app.open_sign(self.index, self.roll)
-
-    def display_text(self) -> str:
-        """Spoken sentence, or the /me preview exactly as the chat will show it."""
-        if self.app.me_prefix.get():
-            return "l'individu " + self.result["me_phrase"]
-        return self.result["phrase"]
-
-    def update(self) -> None:
-        text = self.var.get().strip()
-        self.error.config(text="")
-        if not text:
-            return self.clear()
-        try:
-            roll = reading.parse_roll(text)
-        except ValueError as exc:
-            return self.clear(str(exc))
-        if roll != self.roll:  # a new d20 invalidates the previous polarity roll
-            self.polarity = None
-            self.pol_var.set("")
-        self.roll = roll
-        self._show_polarity_input()
-        if self.app.manual_polarity.get():  # polarity typed by the user: the second player's /roll 1-20
-            pol_text = self.pol_var.get().strip()
-            self.polarity = None
-            if pol_text:
-                try:
-                    value = reading.parse_roll(pol_text)
-                except ValueError as exc:
-                    self.error.config(text=str(exc).replace("Jet", "Polarité"))
-                else:
-                    self.polarity = (value, value % 2 == 0)
-        sign = reading.get_sign(self.index, roll)
-        self.sign_label.config(text=sign["sign"])
-        self.observe.config(text=reading.AXES[self.index]["observe"])
-        if self.polarity is None:
-            self.result = None
-            self.polarity_btn.config(state="normal", text="🎲 Lancer la polarité")
-            self.polarity_label.config(text="", fg=MUTED)
-            self.phrase.config(text="")
-            self.copy_btn.config(state="disabled")
-            return
-        value, favorable = self.polarity
-        self.result = reading.read_axis(self.index, roll, favorable, value)
-        self.polarity_btn.config(state="normal", text="🎲 Relancer la polarité")
-        self.polarity_label.config(
-            text=f"Polarité : {value} ({'pair' if favorable else 'impair'}) → "
-                 f"{'FAVORABLE' if favorable else 'DÉFAVORABLE'}",
-            fg=GOOD if favorable else ALERT)
-        self.phrase.config(text=self.display_text())
-        self.copy_btn.config(state="normal")
-
-    def clear(self, message: str = "") -> None:
-        self.roll = None
-        self.polarity = None
-        self.pol_var.set("")
-        self.result = None
-        self.sign_label.config(text="")
-        self.observe.config(text="")
-        self.polarity_btn.config(state="disabled", text="🎲 Lancer la polarité")
-        self.polarity_label.config(text="")
-        self.phrase.config(text="")
-        self.copy_btn.config(state="disabled")
-        self.error.config(text=message)
-
-    def copy(self) -> None:
-        if self.result:
-            self.app.copy_text(self.result["phrase"], self.result["me_phrase"])
-
-
-class ReadingView(tk.Frame):
-    """The three axes and the closing conclusion, one row (text + Copy button) per line."""
-
-    def __init__(self, parent: tk.Widget, app: "App") -> None:
-        super().__init__(parent, bg=BG)
-        self.app = app
-        f = app.fonts
-        foot = tk.Frame(self, bg=PANEL, padx=18, pady=10)
-        foot.pack(side="bottom", padx=21, pady=(4, 10), fill="x")
-        tk.Label(foot, text="CONCLUSION", font=f["label"], bg=PANEL, fg=WARM).pack(anchor="w")
-        self.rows = []  # (frame, label, copy button) x4: tone, Lignes, Imperfections, Forme
-        for _ in range(4):
-            row = tk.Frame(foot, bg=PANEL)
-            row.pack(fill="x", pady=2)
-            button = tk.Button(row, text="Copier", font=f["label_s"], bg=BG, fg=TEXT, activebackground=WARM,
-                               relief="flat", padx=10, pady=2)
-            button.pack(side="right", padx=(10, 0))
-            label = tk.Label(row, text="", font=f["body"], bg=PANEL, fg=TEXT, wraplength=1100, justify="left",
-                             anchor="w")
-            label.pack(side="left", fill="x", expand=True)
-            self.rows.append((row, label, button))
-        foot.bind("<Configure>", self._on_foot_resize)
-        buttons = tk.Frame(foot, bg=PANEL)
-        buttons.pack(anchor="w", pady=(4, 0))
-        self.buttons = buttons  # rows are always packed above this frame
-        self.copy_synth = tk.Button(buttons, text="Tout copier (une ligne)", font=f["label_s"], bg=BG, fg=TEXT,
-                                    relief="flat", padx=10, pady=4, state="disabled", command=app.copy_synthesis)
-        self.copy_synth.pack(side="left", padx=(0, 8))
-        tk.Button(buttons, text="Nouvelle lecture", font=f["label_s"], bg=BG, fg=TEXT, relief="flat", padx=10,
-                  pady=4, command=app.reset).pack(side="left")
-
-        cols = tk.Frame(self, bg=BG)
-        cols.pack(padx=14, pady=6, fill="both", expand=True)
-        cols.grid_rowconfigure(0, weight=1)
-        self.panels = []
-        for i in range(3):
-            panel = AxisPanel(app, cols, i)
-            panel.frame.grid(row=0, column=i, padx=7, sticky="nsew")
-            cols.grid_columnconfigure(i, weight=1, uniform="axes")
-            self.panels.append(panel)
-
-    def _on_foot_resize(self, event: tk.Event) -> None:
-        for _, label, _ in self.rows:
-            label.config(wraplength=max(300, event.width - 190))
-
-    def show_placeholder(self, text: str) -> None:
-        """Before the three readings are complete: one message, no copy buttons."""
-        for i, (row, label, button) in enumerate(self.rows):
-            if i == 0:
-                label.config(text=text, fg=TEXT)
-                button.pack_forget()
-                row.pack_forget()
-                row.pack(fill="x", pady=2, before=self.buttons)
-            else:
-                row.pack_forget()
-
-    def show_items(self, items: list[dict], me_mode: bool) -> None:
-        """One row per conclusion line: green / red for the axes, its own Copy button."""
-        for (row, label, button), item in zip(self.rows, items):
-            text = "l'individu " + item["me"] if me_mode else item["display"]
-            color = TEXT if item["favorable"] is None else (GOOD if item["favorable"] else ALERT)
-            label.config(text=text, fg=color)
-            button.config(command=lambda i=item: self.app.copy_text(i["spoken"], i["me"]))
-            button.pack_forget()
-            button.pack(side="right", padx=(10, 0), before=label)
-            row.pack_forget()
-            row.pack(fill="x", pady=2, before=self.buttons)
-
-
 class App:
     def __init__(self) -> None:
         load_private_fonts()
         self.root = tk.Tk()
-        self.root.title(f"Cranomancie — Oswald Bald (v{updater.local_version()})")
+        self.root.title(f"CRANOMANTIE 2000 — Oswald Bald (v{updater.local_version()})")
         self.root.configure(bg=BG)
         self.root.minsize(900, 600)
         # Fixed window size: children must not shrink or grow the toplevel when fonts change.
@@ -348,6 +81,10 @@ class App:
         tk.Checkbutton(bar, text="Polarité manuelle (jet fait par un autre joueur)", variable=self.manual_polarity,
                        font=f["label_s"], bg=BG, fg=TEXT, selectcolor=PANEL, activebackground=BG,
                        activeforeground=WARM, command=self.on_polarity_mode).pack(side="left", padx=10)
+        self.show_viktor = tk.BooleanVar(value=True)
+        tk.Checkbutton(bar, text="Viktor", variable=self.show_viktor, font=f["label_s"], bg=BG, fg=TEXT,
+                       selectcolor=PANEL, activebackground=BG, activeforeground=WARM,
+                       command=self.toggle_viktor).pack(side="left", padx=10)
         tk.Button(bar, text="Tout tirer au hasard", font=f["label_s"], bg=PANEL, fg=TEXT, activebackground=WARM,
                   relief="flat", padx=10, pady=4, command=self.randomize_all).pack(side="left", padx=8)
         self.view_buttons = {}
@@ -395,6 +132,7 @@ class App:
         for name, size in BASE_SIZES.items():
             self.fonts[name].configure(size=max(7, int(size * self.scale)))
         self.signs_view.rescale()
+        self.reading_view.relayout_soon()
 
     def show_view(self, name: str) -> None:
         self.current_view = name
@@ -462,6 +200,9 @@ class App:
         self.root.clipboard_clear()
         self.root.clipboard_append(text)
 
+    def toggle_viktor(self) -> None:
+        self.reading_view.set_viktor(self.show_viktor.get())
+
     def on_polarity_mode(self) -> None:
         """Switching between UI-rolled and manually entered polarity starts every axis' polarity afresh."""
         for panel in self.panels:
@@ -482,6 +223,7 @@ class App:
     def refresh(self) -> None:
         for panel in self.panels:
             panel.update()
+        self.reading_view.relayout_soon()
         done = [p.result for p in self.panels if p.result]
         if len(done) == 3:
             self.synthesis_spoken = reading.synthesize(done)
