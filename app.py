@@ -238,6 +238,19 @@ class AxisPanel:
 class ReadingView(tk.Frame):
     """The three axes and the closing synthesis."""
 
+    def _on_foot_resize(self, event: tk.Event) -> None:
+        for label in [self.synthesis] + self.detail_labels:
+            label.config(wraplength=max(300, event.width - 40))
+
+    def show_conclusion(self, tone_text: str, lines: list[tuple[str, bool]] | None) -> None:
+        """Tone (or the /me preview) and, when given, the coloured axis lines."""
+        self.synthesis.config(text=tone_text)
+        for label in self.detail_labels:
+            label.pack_forget()
+        for label, (text, favorable) in zip(self.detail_labels, lines or []):
+            label.config(text=text, fg=GOOD if favorable else ALERT)
+            label.pack(anchor="w", fill="x", pady=1, before=self.buttons)
+
     def __init__(self, parent: tk.Widget, app: "App") -> None:
         super().__init__(parent, bg=BG)
         f = app.fonts
@@ -247,9 +260,13 @@ class ReadingView(tk.Frame):
         self.synthesis = tk.Label(foot, text="", font=f["body"], bg=PANEL, fg=TEXT, wraplength=1180,
                                   justify="left", anchor="w")
         self.synthesis.pack(anchor="w", pady=4, fill="x")
-        foot.bind("<Configure>", lambda e: self.synthesis.config(wraplength=max(300, e.width - 40)))
-        buttons = tk.Frame(foot, bg=PANEL)
-        buttons.pack(anchor="w")
+        # One coloured line per axis (green = favorable, red = unfavorable); hidden in /me preview mode.
+        self.detail_labels = [tk.Label(foot, text="", font=f["body"], bg=PANEL, fg=TEXT, justify="left", anchor="w",
+                                       wraplength=1180) for _ in range(3)]
+        foot.bind("<Configure>", self._on_foot_resize)
+        self.buttons = tk.Frame(foot, bg=PANEL)
+        self.buttons.pack(anchor="w")
+        buttons = self.buttons
         self.copy_synth = tk.Button(buttons, text="Copier la conclusion", font=f["label_s"], bg=BG, fg=TEXT,
                                     relief="flat", padx=10, pady=4, state="disabled", command=app.copy_synthesis)
         self.copy_synth.pack(side="left", padx=(0, 8))
@@ -258,6 +275,7 @@ class ReadingView(tk.Frame):
 
         cols = tk.Frame(self, bg=BG)
         cols.pack(padx=14, pady=6, fill="both", expand=True)
+        self.foot = foot
         cols.grid_rowconfigure(0, weight=1)
         self.panels = []
         for i in range(3):
@@ -449,14 +467,14 @@ class App:
         done = [p.result for p in self.panels if p.result]
         if len(done) == 3:
             self.synthesis_spoken = reading.synthesize(done)
-            # /me preview = the exact one-line chat text; otherwise one line per axis on screen.
-            shown = ("l'individu " + reading.synthesize_me(self.synthesis_spoken)
-                     if self.me_prefix.get() else reading.synthesize_display(done))
-            self.synthesis.config(text=shown)
+            if self.me_prefix.get():  # /me preview = the exact one-line chat text
+                self.reading_view.show_conclusion("l'individu " + reading.synthesize_me(self.synthesis_spoken), None)
+            else:  # tone, then one line per axis, green or red
+                self.reading_view.show_conclusion(reading.tone(done), reading.display_lines(done))
             self.copy_synth.config(state="normal")
         else:
             self.synthesis_spoken = ""
-            self.synthesis.config(text="Entrez les trois jets, puis lancez la polarité de chaque axe.")
+            self.reading_view.show_conclusion("Entrez les trois jets, puis lancez la polarité de chaque axe.", None)
             self.copy_synth.config(state="disabled")
 
     def randomize_all(self) -> None:

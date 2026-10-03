@@ -17,7 +17,7 @@ Si Python est absent, `cranomancie.bat` propose de l'installer avec `winget`. La
 - Chaque champ de jet a des flèches ▲▼ (ou les touches ↑↓←→, la molette) et un bouton 🎲.
 - **Polarité** : le bouton « Lancer la polarité » de chaque axe fait un jet de 1 à 20 : pair = lecture favorable, impair = défavorable. Il peut être relancé. Avec la case **Polarité manuelle**, le jet est fait par un autre joueur en jeu et vous saisissez son résultat.
 - **Aléatoire** (par axe) et **Tout tirer au hasard** tirent le jet et la polarité.
-- **Conclusion** : une phrase selon le nombre d'axes favorables, puis une ligne par axe (signe, polarité avec son jet, définition). Copiable en une ligne.
+- **Conclusion** : une phrase selon le nombre d'axes favorables, puis une ligne par axe (signe et définition), en vert si l'axe est favorable et en rouge s'il est défavorable. La copie pour le chat reste en une ligne et écrit la polarité en toutes lettres (le chat n'a pas de couleurs).
 - **Bibliothèque des signes** : les 60 signes, recherche (numéro, signe, mot-clé), volet de détail avec les deux définitions. Un clic sur un signe depuis la lecture y mène.
 - **Copier la phrase** prépare le texte à dire en jeu. Avec l'option **Format /me**, la phrase est réécrite à la troisième personne et copiée avec `/me` devant : le jeu ajoute lui-même « l'individu ».
 

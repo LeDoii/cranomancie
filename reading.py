@@ -59,18 +59,19 @@ def detail_line(r: dict) -> str:
     return f"{r['axis']} : {_lower_first(r['sign']['sign'])}, {polarity}, {_lower_first(r['meaning'])}."
 
 
-def _tone(readings: list[dict]) -> str:
+def tone(readings: list[dict]) -> str:
     return DATA["synthesis"][str(sum(1 for r in readings if r["favorable"]))]
 
 
 def synthesize(readings: list[dict]) -> str:
     """Tone sentence + the detail of every axis (sign, polarity, definition), on a single line (to copy)."""
-    return " ".join([_tone(readings)] + [detail_line(r) for r in readings])
+    return " ".join([tone(readings)] + [detail_line(r) for r in readings])
 
 
-def synthesize_display(readings: list[dict]) -> str:
-    """Same content for the screen: the tone, then one line per axis."""
-    return "\n".join([_tone(readings)] + [detail_line(r) for r in readings])
+def display_lines(readings: list[dict]) -> list[tuple[str, bool]]:
+    """Screen lines of the conclusion, without the polarity wording (the colour says it): (text, favorable)."""
+    return [(f"{r['axis']} : {_lower_first(r['sign']['sign'])}, {_lower_first(r['meaning'])}.", r["favorable"])
+            for r in readings]
 
 
 def synthesize_me(spoken: str) -> str:
