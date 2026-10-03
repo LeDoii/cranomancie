@@ -1,0 +1,471 @@
+{
+  "meta": {
+    "title": "Cranomancie",
+    "subtitle": "La lecture du crâne chauve selon Oswald Bald"
+  },
+  "axes": [
+    {
+      "id": "lignes",
+      "label": "Lignes",
+      "with_article": "les Lignes",
+      "nom": "Le Chemin",
+      "observe": "Sutures, plis et sillons de la peau du crâne",
+      "question": "D'où vient la personne, où va sa route ?",
+      "spoken": "Sur les lignes de votre crâne",
+      "me": "suit du doigt les lignes du crâne et relève",
+      "signs": [
+        {
+          "n": 1,
+          "sign": "Ligne unique, nette et droite",
+          "sign_art": "une ligne unique, nette et droite",
+          "fav": "Une vie sans détour, un but clair",
+          "unf": "Une route rigide, sans issue de secours"
+        },
+        {
+          "n": 2,
+          "sign": "Ligne profonde",
+          "sign_art": "une ligne profonde",
+          "fav": "Une grande vitalité, des épreuves surmontées",
+          "unf": "Des blessures anciennes qui ne se referment pas"
+        },
+        {
+          "n": 3,
+          "sign": "Ligne fine, à peine visible",
+          "sign_art": "une ligne fine, à peine visible",
+          "fav": "Une vie discrète et paisible",
+          "unf": "Un effacement, un manque de présence"
+        },
+        {
+          "n": 4,
+          "sign": "Ligne ondulée",
+          "sign_art": "une ligne ondulée",
+          "fav": "Une grande adaptabilité, à l'aise partout",
+          "unf": "Une humeur changeante, une constance qui manque"
+        },
+        {
+          "n": 5,
+          "sign": "Ligne brisée",
+          "sign_art": "une ligne brisée",
+          "fav": "Une rupture salutaire, un nouveau départ",
+          "unf": "Un coup du sort qui interrompt un projet"
+        },
+        {
+          "n": 6,
+          "sign": "Ligne chaînée (en maillons)",
+          "sign_art": "une ligne chaînée (en maillons)",
+          "fav": "Des liens solides, un entourage qui soutient",
+          "unf": "Une vie dispersée, des entraves, des dettes"
+        },
+        {
+          "n": 7,
+          "sign": "Ligne qui se fourche au bout",
+          "sign_art": "une ligne qui se fourche au bout",
+          "fav": "Deux voies de réussite s'ouvrent",
+          "unf": "Une énergie divisée, une dispersion"
+        },
+        {
+          "n": 8,
+          "sign": "Ligne doublée (parallèle)",
+          "sign_art": "une ligne doublée (parallèle)",
+          "fav": "Une protection, quelqu'un veille discrètement",
+          "unf": "Une dépendance, une vie dans l'ombre d'un autre"
+        },
+        {
+          "n": 9,
+          "sign": "Ligne qui s'arrête net",
+          "sign_art": "une ligne qui s'arrête net",
+          "fav": "Une mission accomplie, un chapitre se ferme",
+          "unf": "Un arrêt brutal, un projet interrompu trop tôt"
+        },
+        {
+          "n": 10,
+          "sign": "Deux lignes qui se croisent",
+          "sign_art": "deux lignes qui se croisent",
+          "fav": "Une rencontre décisive à un tournant",
+          "unf": "Un obstacle ou un conflit au carrefour"
+        },
+        {
+          "n": 11,
+          "sign": "Petite île sur la ligne",
+          "sign_art": "une petite île sur la ligne",
+          "fav": "Une pause méritée, une retraite bienvenue",
+          "unf": "Une période de doute, une faiblesse passagère"
+        },
+        {
+          "n": 12,
+          "sign": "Ligne qui file vers le front",
+          "sign_art": "une ligne qui file vers le front",
+          "fav": "Une ambition tournée vers l'avenir",
+          "unf": "Une fuite en avant, de l'impatience"
+        },
+        {
+          "n": 13,
+          "sign": "Ligne qui descend vers la nuque",
+          "sign_art": "une ligne qui descend vers la nuque",
+          "fav": "Des racines profondes, des attaches fidèles",
+          "unf": "Le regard tourné vers le passé, de la nostalgie"
+        },
+        {
+          "n": 14,
+          "sign": "Ligne courte",
+          "sign_art": "une ligne courte",
+          "fav": "Des projets brefs, menés à bien",
+          "unf": "Un élan qui s'essouffle vite"
+        },
+        {
+          "n": 15,
+          "sign": "Ligne en arc régulier",
+          "sign_art": "une ligne en arc régulier",
+          "fav": "Un cycle harmonieux, une vie équilibrée",
+          "unf": "Une routine, un cercle qui se referme sans avancer"
+        },
+        {
+          "n": 16,
+          "sign": "Ligne en zigzag",
+          "sign_art": "une ligne en zigzag",
+          "fav": "Une vie vive, riche en rebondissements",
+          "unf": "De l'instabilité, des tempêtes en série"
+        },
+        {
+          "n": 17,
+          "sign": "Ligne coupée de fines stries",
+          "sign_art": "une ligne coupée de fines stries",
+          "fav": "Des épreuves traversées avec succès",
+          "unf": "Des contrariétés répétées, des soucis qui s'accumulent"
+        },
+        {
+          "n": 18,
+          "sign": "Deux lignes qui se rejoignent",
+          "sign_art": "deux lignes qui se rejoignent",
+          "fav": "Une union, une alliance profitable",
+          "unf": "Une fusion qui absorbe, une liberté perdue"
+        },
+        {
+          "n": 19,
+          "sign": "Ligne qui s'efface puis reprend",
+          "sign_art": "une ligne qui s'efface puis reprend",
+          "fav": "Une renaissance après un creux",
+          "unf": "Du temps perdu, une traversée du désert"
+        },
+        {
+          "n": 20,
+          "sign": "Ligne marquée d'un point de convergence",
+          "sign_art": "une ligne marquée d'un point de convergence",
+          "fav": "Un grand destin, un coup d'éclat",
+          "unf": "Un éclat qui éblouit, un risque de chute"
+        }
+      ]
+    },
+    {
+      "id": "imperfections",
+      "label": "Imperfections",
+      "with_article": "les Imperfections",
+      "nom": "Les Marques",
+      "observe": "Cicatrices, grains de beauté, bosses, taches, reliefs",
+      "question": "Quels dons et quelles faiblesses porte la personne ?",
+      "spoken": "Parmi les marques de votre crâne",
+      "me": "examine les marques du crâne et relève",
+      "signs": [
+        {
+          "n": 1,
+          "sign": "Grain de beauté sombre",
+          "sign_art": "un grain de beauté sombre",
+          "fav": "Une protection discrète, une chance cachée",
+          "unf": "Un secret lourd à porter, une rancune"
+        },
+        {
+          "n": 2,
+          "sign": "Cicatrice fine",
+          "sign_art": "une cicatrice fine",
+          "fav": "Une leçon apprise, du courage",
+          "unf": "Une ancienne blessure qui se rouvre"
+        },
+        {
+          "n": 3,
+          "sign": "Cicatrice large",
+          "sign_art": "une cicatrice large",
+          "fav": "Une grande épreuve surmontée, du respect",
+          "unf": "Un traumatisme encore à vif"
+        },
+        {
+          "n": 4,
+          "sign": "Bosse ronde",
+          "sign_art": "une bosse ronde",
+          "fav": "Un don affirmé, un talent évident",
+          "unf": "De l'orgueil, une tête dure"
+        },
+        {
+          "n": 5,
+          "sign": "Creux dans le crâne",
+          "sign_art": "un creux dans le crâne",
+          "fav": "Une grande écoute, de la réceptivité",
+          "unf": "Un manque, un vide intérieur"
+        },
+        {
+          "n": 6,
+          "sign": "Taches claires",
+          "sign_art": "des taches claires",
+          "fav": "Une joie légère, de la chance au jeu",
+          "unf": "De l'insouciance, une légèreté coupable"
+        },
+        {
+          "n": 7,
+          "sign": "Veine saillante",
+          "sign_art": "une veine saillante",
+          "fav": "Une passion vive, de l'énergie",
+          "unf": "De la colère, une tension qui déborde"
+        },
+        {
+          "n": 8,
+          "sign": "Peau luisante",
+          "sign_art": "une peau luisante",
+          "fav": "De l'éclat, du charisme",
+          "unf": "De la vanité, une apparence trompeuse"
+        },
+        {
+          "n": 9,
+          "sign": "Peau rougie",
+          "sign_art": "une peau rougie",
+          "fav": "De l'ardeur, une fièvre créatrice",
+          "unf": "De l'emportement, un danger de brûlure"
+        },
+        {
+          "n": 10,
+          "sign": "Peau très pâle",
+          "sign_art": "une peau très pâle",
+          "fav": "Une sagesse sereine, du calme",
+          "unf": "De la fragilité, de la fatigue"
+        },
+        {
+          "n": 11,
+          "sign": "Petite verrue",
+          "sign_art": "une petite verrue",
+          "fav": "Une bonne fortune modeste",
+          "unf": "Un petit désagrément qui revient"
+        },
+        {
+          "n": 12,
+          "sign": "Pli profond",
+          "sign_art": "un pli profond",
+          "fav": "De l'expérience, de la réflexion",
+          "unf": "Des soucis, un tourment"
+        },
+        {
+          "n": 13,
+          "sign": "Coupure récente",
+          "sign_art": "une coupure récente",
+          "fav": "Un changement proche, une page tournée",
+          "unf": "Une querelle proche, un avertissement"
+        },
+        {
+          "n": 14,
+          "sign": "Tache bleutée",
+          "sign_art": "une tache bleutée",
+          "fav": "Une grande sensibilité, de l'intuition",
+          "unf": "Une influence extérieure, de la malchance"
+        },
+        {
+          "n": 15,
+          "sign": "Peau épaisse et rugueuse",
+          "sign_art": "une peau épaisse et rugueuse",
+          "fav": "De la ténacité, une résistance à tout",
+          "unf": "Un entêtement, un attachement au passé"
+        },
+        {
+          "n": 16,
+          "sign": "Double bosse",
+          "sign_art": "une double bosse",
+          "fav": "Deux talents qui se complètent",
+          "unf": "Un tiraillement, un double jeu"
+        },
+        {
+          "n": 17,
+          "sign": "Marque en croissant",
+          "sign_art": "une marque en croissant",
+          "fav": "Des cycles favorables, de l'intuition",
+          "unf": "Une humeur lunatique, des illusions"
+        },
+        {
+          "n": 18,
+          "sign": "Marque en étoile",
+          "sign_art": "une marque en étoile",
+          "fav": "De la chance, le signe d'une vocation",
+          "unf": "Un vœu irréalisable, une distraction"
+        },
+        {
+          "n": 19,
+          "sign": "Trace de brûlure",
+          "sign_art": "une trace de brûlure",
+          "fav": "Une épreuve du feu surmontée, de l'endurance",
+          "unf": "Un feu qui couve, un danger lié au feu"
+        },
+        {
+          "n": 20,
+          "sign": "Peau parfaitement lisse",
+          "sign_art": "une peau parfaitement lisse",
+          "fav": "De la pureté, de la sérénité",
+          "unf": "Une vie sans relief, des secrets bien gardés"
+        }
+      ]
+    },
+    {
+      "id": "forme",
+      "label": "Forme",
+      "with_article": "la Forme",
+      "nom": "La Nature",
+      "observe": "Contour général, proportions, symétrie",
+      "question": "Qui est la personne au fond, vers quoi tend-elle ?",
+      "spoken": "Dans la forme de votre crâne",
+      "me": "observe la forme du crâne et relève",
+      "signs": [
+        {
+          "n": 1,
+          "sign": "Crâne rond",
+          "sign_art": "un crâne rond",
+          "fav": "Un caractère équilibré et généreux",
+          "unf": "De la lenteur, de la complaisance"
+        },
+        {
+          "n": 2,
+          "sign": "Crâne ovale",
+          "sign_art": "un crâne ovale",
+          "fav": "Un esprit vif et fin",
+          "unf": "De la froideur, du calcul"
+        },
+        {
+          "n": 3,
+          "sign": "Crâne allongé",
+          "sign_art": "un crâne allongé",
+          "fav": "Un rêveur, une grande imagination",
+          "unf": "Un étourdi, la tête ailleurs"
+        },
+        {
+          "n": 4,
+          "sign": "Crâne large",
+          "sign_art": "un crâne large",
+          "fav": "Un tempérament ouvert, une grande volonté",
+          "unf": "De l'obstination"
+        },
+        {
+          "n": 5,
+          "sign": "Front haut",
+          "sign_art": "un front haut",
+          "fav": "De l'ambition, de la vision",
+          "unf": "De l'arrogance"
+        },
+        {
+          "n": 6,
+          "sign": "Front bas",
+          "sign_art": "un front bas",
+          "fav": "Du pragmatisme, de la ténacité",
+          "unf": "Un esprit étroit"
+        },
+        {
+          "n": 7,
+          "sign": "Sommet plat",
+          "sign_art": "un sommet plat",
+          "fav": "De la stabilité, de la loyauté",
+          "unf": "De l'immobilisme"
+        },
+        {
+          "n": 8,
+          "sign": "Sommet pointu",
+          "sign_art": "un sommet pointu",
+          "fav": "Un idéal élevé, une curiosité vive",
+          "unf": "De la nervosité, de la susceptibilité"
+        },
+        {
+          "n": 9,
+          "sign": "Nuque proéminente",
+          "sign_art": "une nuque proéminente",
+          "fav": "Une force instinctive, de l'endurance",
+          "unf": "Des pulsions, de la brusquerie"
+        },
+        {
+          "n": 10,
+          "sign": "Arrière du crâne plat",
+          "sign_art": "l'arrière du crâne plat",
+          "fav": "De la franchise, de la constance",
+          "unf": "De la brutalité"
+        },
+        {
+          "n": 11,
+          "sign": "Tempes marquées",
+          "sign_art": "des tempes marquées",
+          "fav": "Un sens aigu de l'observation",
+          "unf": "De la méfiance, des soupçons"
+        },
+        {
+          "n": 12,
+          "sign": "Arcades prononcées",
+          "sign_art": "des arcades prononcées",
+          "fav": "De la détermination, du courage",
+          "unf": "De l'agressivité, de la bravade"
+        },
+        {
+          "n": 13,
+          "sign": "Crâne symétrique",
+          "sign_art": "un crâne symétrique",
+          "fav": "De l'harmonie, de la mesure",
+          "unf": "Du perfectionnisme, de la rigidité"
+        },
+        {
+          "n": 14,
+          "sign": "Crâne asymétrique",
+          "sign_art": "un crâne asymétrique",
+          "fav": "De l'originalité, un caractère unique",
+          "unf": "Du déséquilibre, de l'instabilité"
+        },
+        {
+          "n": 15,
+          "sign": "Petit crâne",
+          "sign_art": "un petit crâne",
+          "fav": "De la vivacité, de l'agilité",
+          "unf": "De la timidité, de l'insécurité"
+        },
+        {
+          "n": 16,
+          "sign": "Grand crâne",
+          "sign_art": "un grand crâne",
+          "fav": "De la noblesse d'esprit, de la grandeur",
+          "unf": "De la lourdeur, le poids des responsabilités"
+        },
+        {
+          "n": 17,
+          "sign": "Contour anguleux",
+          "sign_art": "un contour anguleux",
+          "fav": "Un caractère trempé, de la rigueur",
+          "unf": "De la dureté"
+        },
+        {
+          "n": 18,
+          "sign": "Contour doux et arrondi",
+          "sign_art": "un contour doux et arrondi",
+          "fav": "De la douceur, de la bienveillance",
+          "unf": "De l'indécision, de la naïveté"
+        },
+        {
+          "n": 19,
+          "sign": "Profil bombé vers l'avant",
+          "sign_art": "un profil bombé vers l'avant",
+          "fav": "Un caractère entreprenant",
+          "unf": "De la précipitation"
+        },
+        {
+          "n": 20,
+          "sign": "Crâne d'une régularité parfaite",
+          "sign_art": "un crâne d'une régularité parfaite",
+          "fav": "Une nature rare, un destin hors du commun",
+          "unf": "Une perfection de façade, une pression trop haute"
+        }
+      ]
+    }
+  ],
+  "synthesis": {
+    "3": "Les trois signes sont favorables : le présage est très favorable, les signes s'accordent.",
+    "2": "Deux signes sont favorables : le présage est favorable, avec un point de vigilance sur le signe défavorable.",
+    "1": "Un seul signe est favorable : le présage est mitigé, ce signe est un appui et les deux autres demandent de la prudence.",
+    "0": "Aucun signe n'est favorable : le crâne parle avec gravité, mais ce n'est qu'un avertissement."
+  },
+  "me_synthesis_prefix": "conclut sa lecture : "
+}
