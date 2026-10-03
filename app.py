@@ -208,7 +208,7 @@ class AxisPanel:
             self.copy_btn.config(state="disabled")
             return
         value, favorable = self.polarity
-        self.result = reading.read_axis(self.index, roll, favorable)
+        self.result = reading.read_axis(self.index, roll, favorable, value)
         self.polarity_btn.config(state="normal", text="🎲 Relancer la polarité")
         self.polarity_label.config(
             text=f"Polarité : {value} ({'pair' if favorable else 'impair'}) → "
@@ -449,8 +449,9 @@ class App:
         done = [p.result for p in self.panels if p.result]
         if len(done) == 3:
             self.synthesis_spoken = reading.synthesize(done)
+            # /me preview = the exact one-line chat text; otherwise one line per axis on screen.
             shown = ("l'individu " + reading.synthesize_me(self.synthesis_spoken)
-                     if self.me_prefix.get() else self.synthesis_spoken)
+                     if self.me_prefix.get() else reading.synthesize_display(done))
             self.synthesis.config(text=shown)
             self.copy_synth.config(state="normal")
         else:

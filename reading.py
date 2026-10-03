@@ -38,7 +38,7 @@ def sign_preview(axis_index: int, roll: int) -> dict:
     return {"axis": AXES[axis_index]["label"], "sign": sign, "roll": roll}
 
 
-def read_axis(axis_index: int, roll: int, favorable: bool) -> dict:
+def read_axis(axis_index: int, roll: int, favorable: bool, polarity_value: int | None = None) -> dict:
     axis = AXES[axis_index]
     sign = get_sign(axis_index, roll)
     meaning = _lower_first(sign["fav"] if favorable else sign["unf"])
@@ -46,25 +46,31 @@ def read_axis(axis_index: int, roll: int, favorable: bool) -> dict:
     phrase = f"{axis['spoken']}, je vois {sign['sign_art']} : signe {polarity}, {meaning}."
     me_phrase = f"{axis['me']} {sign['sign_art']} : signe {polarity}, {meaning}."
     return {"axis": axis["label"], "index": axis_index, "roll": roll, "sign": sign, "favorable": favorable,
+            "polarity_value": polarity_value,
             "meaning": sign["fav"] if favorable else sign["unf"],
             "phrase": phrase, "me_phrase": me_phrase}
 
 
-def _join(names: list[str]) -> str:
-    """'les Lignes', 'les Lignes et la Forme', 'les Lignes, les Imperfections et la Forme'."""
-    return names[0] if len(names) == 1 else ", ".join(names[:-1]) + " et " + names[-1]
+def detail_line(r: dict) -> str:
+    """One axis of the conclusion: 'Lignes : ligne brisée, favorable (polarité 14, pair), une rupture salutaire.'"""
+    polarity = "favorable" if r["favorable"] else "défavorable"
+    if r["polarity_value"] is not None:
+        polarity += f" (polarité {r['polarity_value']}, {'pair' if r['polarity_value'] % 2 == 0 else 'impair'})"
+    return f"{r['axis']} : {_lower_first(r['sign']['sign'])}, {polarity}, {_lower_first(r['meaning'])}."
+
+
+def _tone(readings: list[dict]) -> str:
+    return DATA["synthesis"][str(sum(1 for r in readings if r["favorable"]))]
 
 
 def synthesize(readings: list[dict]) -> str:
-    """Tone sentence + the detail of which axes came out favorable / unfavorable."""
-    good = [AXES[r["index"]]["with_article"] for r in readings if r["favorable"]]
-    bad = [AXES[r["index"]]["with_article"] for r in readings if not r["favorable"]]
-    text = DATA["synthesis"][str(len(good))]
-    if good:
-        text += f" {'Axe favorable' if len(good) == 1 else 'Axes favorables'} : {_join(good)}."
-    if bad:
-        text += f" {'Axe défavorable' if len(bad) == 1 else 'Axes défavorables'} : {_join(bad)}."
-    return text
+    """Tone sentence + the detail of every axis (sign, polarity, definition), on a single line (to copy)."""
+    return " ".join([_tone(readings)] + [detail_line(r) for r in readings])
+
+
+def synthesize_display(readings: list[dict]) -> str:
+    """Same content for the screen: the tone, then one line per axis."""
+    return "\n".join([_tone(readings)] + [detail_line(r) for r in readings])
 
 
 def synthesize_me(spoken: str) -> str:
