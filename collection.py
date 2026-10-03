@@ -73,9 +73,9 @@ class DetailPanel(tk.Frame):
         self.text.tag_configure("m", font=f["label_s"], foreground=MUTED)
         self.text.tag_configure("center", justify="center", spacing1=6, spacing3=6)
 
-    def set_arcane(self, arcane: dict) -> None:
+    def set_arcane(self, arcane: dict, reversed_: bool = False) -> None:
         self.arcane = arcane
-        self.reversed = False
+        self.reversed = reversed_
         self.title.config(text=f"{arcane['numeral']} — {arcane['name']}")
         self._fill()
         self.rescale()
@@ -227,12 +227,19 @@ class CollectionView(tk.Frame):
         self.canvas.yview_scroll(-1 * (event.delta // 120), "units")
 
     # --- drawer -----------------------------------------------------------
-    def show_detail(self, arcane: dict) -> None:
+    def open_card(self, arcane: dict, reversed_: bool = False) -> None:
+        """Jump here from the reading page: clear the search so the card is listed, then open it."""
+        if self.query.get():
+            self.query.set("")
+            self.populate()
+        self.show_detail(arcane, reversed_)
+
+    def show_detail(self, arcane: dict, reversed_: bool = False) -> None:
         self.selected = arcane["n"]
         self.detail.grid(row=0, column=1, sticky="ns", padx=(8, 0))
         self.detail.config(width=self.drawer_width)
         self.detail.pack_propagate(False)
-        self.detail.set_arcane(arcane)
+        self.detail.set_arcane(arcane, reversed_)
         self._highlight()
         if arcane["n"] in self.cells:
             self.after(30, lambda: self._see(self.cells[arcane["n"]]))

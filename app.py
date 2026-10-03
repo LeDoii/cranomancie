@@ -110,8 +110,9 @@ class AxisPanel:
             field = NumberField(self.inputs, app, self.vars[key], caption, lo, hi)
             self.entries[key] = (field, field.entry)
 
-        self.card_label = tk.Label(self.frame, bg=PANEL)
+        self.card_label = tk.Label(self.frame, bg=PANEL, cursor="hand2")
         self.card_label.pack(pady=8)
+        self.card_label.bind("<Button-1>", lambda _e: self.open_detail())
         self.caption = tk.Label(self.frame, text="", font=f["title_s"], bg=PANEL, fg=TEXT)
         self.caption.pack()
         self.phrase = tk.Label(self.frame, text="", font=f["body"], bg=PANEL, fg=TEXT,
@@ -184,6 +185,11 @@ class AxisPanel:
         self.phrase.config(text=self.display_text())
         self.copy_btn.config(state="normal")
         self.render_card()
+
+    def open_detail(self) -> None:
+        """Click on the card: open its preview in the collection, with the same orientation."""
+        if self.result:
+            self.app.open_card(self.result["arcane"], self.result["reversed"])
 
     def display_text(self) -> str:
         """Spoken sentence, or the /me preview exactly as the chat will show it."""
@@ -348,6 +354,10 @@ class App:
         for panel in self.panels:
             panel.render_card()
         self.collection_view.rescale()
+
+    def open_card(self, arcane: dict, reversed_: bool) -> None:
+        self.show_view("collection")
+        self.collection_view.open_card(arcane, reversed_)
 
     def show_view(self, name: str) -> None:
         self.current_view = name
