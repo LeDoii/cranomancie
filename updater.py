@@ -7,12 +7,14 @@ requirements (if any), then restart.
 """
 import hashlib
 import json
+import os
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
 import threading
+import time
 import urllib.request
 import zipfile
 from pathlib import Path
@@ -20,9 +22,11 @@ from pathlib import Path
 REPO = "LeDoii/cranomancie"
 MAJOR = 2
 APP_DIR = Path(__file__).resolve().parent
-API_RELEASES = f"https://api.github.com/repos/{REPO}/releases?per_page=50"
-ALLOWED_PREFIX = f"https://github.com/{REPO}/releases/download/"
+# Test hooks (see test_update.py): a local server can stand in for GitHub. Never set in normal use.
+API_RELEASES = os.environ.get("CRANOMANTIE_UPDATE_API") or f"https://api.github.com/repos/{REPO}/releases?per_page=50"
+ALLOWED_PREFIX = os.environ.get("CRANOMANTIE_UPDATE_ALLOW") or f"https://github.com/{REPO}/releases/download/"
 BACKUP_DIR = APP_DIR / "_backup"
+PENDING_DIR = APP_DIR / "_pending"  # files locked by the running app (the fonts), applied at the next start
 NO_WINDOW = 0x08000000  # CREATE_NO_WINDOW (Windows)
 TIMEOUT = 10
 
@@ -119,20 +123,52 @@ def apply_update(info: dict) -> None:
         with zipfile.ZipFile(archive_path) as archive:
             _safe_extract(archive, extracted)
 
-        # Back up every file about to be replaced, then copy the new files over.
+        # Back up every file about to be replaced, then copy the new files over. Identical files are
+        # skipped: the fonts are locked by the running app and almost never change. A locked file that
+        # did change is staged in _pending and applied by apply_pending() at the next start.
         if BACKUP_DIR.exists():
             shutil.rmtree(BACKUP_DIR)
+        if PENDING_DIR.exists():
+            shutil.rmtree(PENDING_DIR, ignore_errors=True)
         for source in extracted.rglob("*"):
             if source.is_dir():
                 continue
             relative = source.relative_to(extracted)
             current = APP_DIR / relative
             if current.exists():
+                if current.stat().st_size == source.stat().st_size and current.read_bytes() == source.read_bytes():
+                    continue
                 (BACKUP_DIR / relative).parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(current, BACKUP_DIR / relative)
             current.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(source, current)
+            try:
+                shutil.copy2(source, current)
+            except OSError:  # locked by this process (Windows): finish it at the next start
+                (PENDING_DIR / relative).parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(source, PENDING_DIR / relative)
     install_requirements()
+
+
+def apply_pending() -> None:
+    """At startup, before the fonts are loaded: move the files staged by the last update into place."""
+    if not PENDING_DIR.exists():
+        return
+    for _ in range(10):  # the previous window may still be closing: retry for a few seconds
+        left = False
+        for source in list(PENDING_DIR.rglob("*")):
+            if source.is_dir():
+                continue
+            target = APP_DIR / source.relative_to(PENDING_DIR)
+            try:
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(source, target)
+                source.unlink()
+            except OSError:
+                left = True
+        if not left:
+            shutil.rmtree(PENDING_DIR, ignore_errors=True)
+            return
+        time.sleep(0.5)
 
 
 def restart() -> None:

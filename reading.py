@@ -1,10 +1,18 @@
 """Pure logic of the v2 skull reading: d20 per axis -> sign, UI polarity roll -> phrases."""
+import copy
 import json
+import os
 import random
+import sys
 from pathlib import Path
+
+from signs_text import with_article
 
 DATA = json.loads((Path(__file__).parent / "data.json").read_text(encoding="utf-8"))
 AXES = DATA["axes"]
+ORIGINAL = copy.deepcopy(AXES)  # the shipped definitions: the target of "Réinitialiser"
+FIELDS = ("sign", "sign_art", "fav", "unf")
+OVERRIDES: dict = {}  # {"lignes": {"5": {"fav": "mon texte"}}}: only the fields the user changed
 
 
 def parse_roll(text: str) -> int:
@@ -93,6 +101,89 @@ def synthesize_me(spoken: str) -> str:
     """Third-person version for /me (the game prepends "l'individu")."""
     return DATA["me_synthesis_prefix"] + _lower_first(spoken)
 
+
+# --- user customisation --------------------------------------------------------------------
+# Edits live in the user's data folder, outside the application folder, so that updates and fresh
+# downloads never erase them. Only the changed fields are stored: unchanged fields keep following
+# the shipped definitions when an update improves them.
+def data_dir() -> Path:
+    custom = os.environ.get("CRANOMANTIE_DATA_DIR")  # tests
+    if custom:
+        return Path(custom)
+    if sys.platform == "win32" and os.environ.get("APPDATA"):
+        return Path(os.environ["APPDATA"]) / "Cranomancie"
+    return Path.home() / ".cranomancie"
+
+
+def overrides_path() -> Path:
+    return data_dir() / "custom_signs.json"
+
+
+def _apply(axis_index: int, n: int) -> None:
+    """Shipped definition + this sign's overrides, in place (the lists in AXES are shared by the whole app)."""
+    sign = AXES[axis_index]["signs"][n - 1]
+    sign.update({k: v for k, v in ORIGINAL[axis_index]["signs"][n - 1].items() if k in FIELDS})
+    sign.update(OVERRIDES.get(AXES[axis_index]["id"], {}).get(str(n), {}))
+
+
+def load_overrides() -> None:
+    """Read the user's edits (a missing or unreadable file means no edits) and apply them."""
+    OVERRIDES.clear()
+    try:
+        stored = json.loads(overrides_path().read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        stored = {}
+    for axis_index, axis in enumerate(AXES):
+        for n_text, fields in (stored.get(axis["id"], {}) if isinstance(stored, dict) else {}).items():
+            if n_text.isdigit() and 1 <= int(n_text) <= 20 and isinstance(fields, dict):
+                clean = {k: v for k, v in fields.items() if k in FIELDS and isinstance(v, str) and v.strip()}
+                if clean:
+                    OVERRIDES.setdefault(axis["id"], {})[n_text] = clean
+                    _apply(axis_index, int(n_text))
+
+
+def _write_overrides() -> None:
+    path = overrides_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp = path.with_suffix(".tmp")
+    temp.write_text(json.dumps(OVERRIDES, ensure_ascii=False, indent=2), encoding="utf-8")
+    os.replace(temp, path)  # atomic: an interrupted save never leaves a half-written file
+
+
+def is_customized(axis_index: int, n: int) -> bool:
+    return bool(OVERRIDES.get(AXES[axis_index]["id"], {}).get(str(n)))
+
+
+def original_sign(axis_index: int, n: int) -> dict:
+    return ORIGINAL[axis_index]["signs"][n - 1]
+
+
+def save_sign(axis_index: int, n: int, sign: str, sign_art: str, fav: str, unf: str) -> None:
+    """Store the user's version of a sign; fields equal to the shipped ones are not stored."""
+    sign, sign_art, fav, unf = (value.strip() for value in (sign, sign_art, fav, unf))
+    if not (sign and fav and unf):
+        raise ValueError("Le nom et les deux définitions ne peuvent pas être vides.")
+    sign_art = sign_art or with_article(sign, strict=False)
+    original = original_sign(axis_index, n)
+    changed = {key: value for key, value in
+               (("sign", sign), ("sign_art", sign_art), ("fav", fav), ("unf", unf)) if value != original[key]}
+    axis_id = AXES[axis_index]["id"]
+    if changed:
+        OVERRIDES.setdefault(axis_id, {})[str(n)] = changed
+    else:
+        OVERRIDES.get(axis_id, {}).pop(str(n), None)
+    _apply(axis_index, n)
+    _write_overrides()
+
+
+def reset_sign(axis_index: int, n: int) -> None:
+    """Back to the shipped definition of this sign."""
+    OVERRIDES.get(AXES[axis_index]["id"], {}).pop(str(n), None)
+    _apply(axis_index, n)
+    _write_overrides()
+
+
+load_overrides()
 
 if __name__ == "__main__":
     # Fairness of the polarity roll and sample phrases.

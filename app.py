@@ -275,6 +275,7 @@ class App:
 if __name__ == "__main__":
     # Launched with pythonw (no console): keep a crash log instead of a silent exit.
     try:
+        updater.apply_pending()  # files of a previous update that were locked while the app was running
         App().run()
     except Exception:
         import traceback
