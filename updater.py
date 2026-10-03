@@ -22,6 +22,7 @@ ALLOWED_PREFIX = f"https://github.com/{REPO}/releases/download/"
 BACKUP_DIR = APP_DIR / "_backup"
 NO_WINDOW = 0x08000000  # CREATE_NO_WINDOW (Windows)
 TIMEOUT = 10
+OBSOLETE_FILES = ["lancer.bat"]  # renamed in 1.0.1 (cranomancie.bat)
 
 
 def local_version() -> str:
@@ -116,6 +117,8 @@ def apply_update(info: dict) -> None:
                 shutil.copy2(current, BACKUP_DIR / relative)
             current.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source, current)
+    for name in OBSOLETE_FILES:
+        (APP_DIR / name).unlink(missing_ok=True)
     install_requirements()
 
 

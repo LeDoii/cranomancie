@@ -2,14 +2,14 @@
 
 Petit outil de jeu de rôle pour **Elixir RP** : la lecture du crâne chauve selon Oswald Bald, un tirage de trois cartes (les 22 arcanes du tarot de Marseille) à partir de jets de `/roll`.
 
-Tout le contenu (guide d'Oswald Bald, sens des arcanes, phrases) est de l'**invention**. Il n'accorde aucun bonus de jeu et reste du background tant que le staff ne l'a pas validé. Projet de fan, sans lien officiel avec le serveur.
+Tout le contenu (guide d'Oswald Bald, sens des arcanes, phrases) est de l'**invention**. Projet de joueur, sans lien officiel avec le serveur.
 
 ## Installation (Windows)
 
 1. Téléchargez le dernier zip dans [Releases](../../releases/latest) et décompressez-le.
-2. Double-cliquez sur `lancer.bat`.
+2. Double-cliquez sur `cranomancie.bat`.
 
-Au premier lancement, `lancer.bat` installe seul ce qui manque :
+Au premier lancement, `cranomancie.bat` installe seul ce qui manque :
 - **Python** (proposition d'installation via `winget` s'il est absent) ;
 - **Pillow** (`requirements.txt`).
 

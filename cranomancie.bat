@@ -31,12 +31,12 @@ exit /b 0
 echo Python est introuvable.
 choice /m "Installer Python 3.12 avec winget"
 if errorlevel 2 (
-  echo Installez Python depuis https://www.python.org/downloads/ puis relancez lancer.bat.
+  echo Installez Python depuis https://www.python.org/downloads/ puis relancez cranomancie.bat.
   pause
   exit /b 1
 )
 winget install -e --id Python.Python.3.12 --accept-package-agreements --accept-source-agreements
 echo.
-echo Python est installe. Fermez cette fenetre et relancez lancer.bat.
+echo Python est installe. Fermez cette fenetre et relancez cranomancie.bat.
 pause
 exit /b 0
