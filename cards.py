@@ -35,12 +35,27 @@ ILLUSTRATIONS = {
 }
 
 
+def _load_chosen() -> None:
+    """Add the validated generated illustrations (illustrations/chosen.json: {"13": "13_sans_nom_v1_s2.png"})."""
+    path = ILLUSTRATIONS_DIR / "chosen.json"
+    if not path.exists():
+        return
+    import json
+    for number, name in json.loads(path.read_text(encoding="utf-8")).items():
+        ILLUSTRATIONS[int(number)] = (f"chosen/{name}", None)  # None = the whole (square) image
+
+
+_load_chosen()
+
+
 def _paste_illustration(img: Image.Image, d: ImageDraw.ImageDraw, n: int, cx: float, cy: float, span: float) -> bool:
     """Paste a square crop of the artwork, with an ink frame; False when absent."""
     entry = ILLUSTRATIONS.get(n)
     if not entry or not (ILLUSTRATIONS_DIR / entry[0]).exists():
         return False
-    art = Image.open(ILLUSTRATIONS_DIR / entry[0]).convert("RGB").crop(entry[1])
+    art = Image.open(ILLUSTRATIONS_DIR / entry[0]).convert("RGB")
+    if entry[1]:
+        art = art.crop(entry[1])
     art = art.resize((int(span), int(span)), Image.LANCZOS)
     x, y = int(cx - span / 2), int(cy - span / 2)
     img.paste(art, (x, y))
