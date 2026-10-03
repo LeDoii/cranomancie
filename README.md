@@ -21,7 +21,17 @@ La fenêtre s'ouvre sans console. En cas de plantage, la cause est écrite dans 
 - **Mode A** : un jet `/roll 1-44` par axe. **Mode B** : `/roll 1-20` puis `/roll 1-6` (jet de confirmation sur un 1 ou un 20).
 - Chaque champ a des flèches ▲▼ (ou les touches ↑↓←→, la molette) et un bouton 🎲. Boutons « Aléatoire » par axe et général.
 - « Collection des cartes » : recherche (nom, numéro `11` ou `XI`, mot-clé), flèches du clavier pour naviguer, volet de détail.
-- « Copier la phrase » prépare le texte à dire en jeu (option : préfixe `/me`).
+- « Copier la phrase » prépare le texte à dire en jeu. Avec l'option **Format /me**, la phrase est réécrite à la troisième personne et copiée avec `/me` devant : le jeu ajoute lui-même « l'individu » (ex. `/me suit une ligne du crâne du doigt : …` s'affiche « l'individu suit une ligne du crâne du doigt : … »). L'aperçu à l'écran montre le rendu exact du chat.
+
+## En cas de problème
+
+- **Windows affiche « Windows a protégé votre ordinateur » ou un avertissement de sécurité** en ouvrant `cranomancie.bat` : cliquez sur *Informations complémentaires*, puis *Exécuter quand même*. Le fichier est un simple script texte que vous pouvez ouvrir avec le Bloc-notes.
+- **« winget n'est pas disponible »** (Windows 10 ancien) : installez Python 3.12 depuis <https://www.python.org/downloads/> en cochant *Add python.exe to PATH* et l'option *tcl/tk and IDLE*, puis relancez `cranomancie.bat`.
+- **Python vient d'être installé mais n'est pas détecté** : fermez la fenêtre et relancez `cranomancie.bat`.
+- **Échec de l'installation de Pillow ou de Python** : vérifiez votre connexion internet, puis relancez.
+- **`winget` demande une confirmation** de Windows : acceptez-la.
+- **L'application se ferme aussitôt** : ouvrez `crash.log` (à côté de `app.py`) pour voir la cause.
+- **« Aucune carte ne s'affiche » ou polices manquantes** : vérifiez que le dossier `fonts/` est bien présent à côté de `app.py` (ne déplacez pas les fichiers séparément).
 
 ## Mises à jour
 

@@ -181,9 +181,15 @@ class AxisPanel:
         arcane = self.result["arcane"]
         sense_label = "à l'envers" if rev else "à l'endroit"
         self.caption.config(text=f"{arcane['name']} — {sense_label}")
-        self.phrase.config(text=self.result["phrase"])
+        self.phrase.config(text=self.display_text())
         self.copy_btn.config(state="normal")
         self.render_card()
+
+    def display_text(self) -> str:
+        """Spoken sentence, or the /me preview exactly as the chat will show it."""
+        if self.app.me_prefix.get():
+            return "l'individu " + self.result["me_phrase"]
+        return self.result["phrase"]
 
     def render_card(self) -> None:
         if not self.result:
@@ -203,7 +209,7 @@ class AxisPanel:
 
     def copy(self) -> None:
         if self.result:
-            self.app.copy_text(self.result["phrase"])
+            self.app.copy_text(self.result["phrase"], self.result["me_phrase"])
 
 
 class ReadingView(tk.Frame):
@@ -223,7 +229,7 @@ class ReadingView(tk.Frame):
         buttons.pack(anchor="w")
         self.copy_synth = tk.Button(buttons, text="Copier la conclusion", font=f["label_s"], bg=BG, fg=TEXT,
                                     relief="flat", padx=10, pady=4, state="disabled",
-                                    command=lambda: app.copy_text(self.synthesis.cget("text")))
+                                    command=app.copy_synthesis)
         self.copy_synth.pack(side="left", padx=(0, 8))
         tk.Button(buttons, text="Nouvelle lecture", font=f["label_s"], bg=BG, fg=TEXT, relief="flat",
                   padx=10, pady=4, command=app.reset).pack(side="left")
@@ -284,9 +290,9 @@ class App:
                            bg=BG, fg=TEXT, selectcolor=PANEL, activebackground=BG,
                            activeforeground=WARM, command=self.refresh).pack(side="left", padx=10)
         self.me_prefix = tk.BooleanVar(value=False)
-        tk.Checkbutton(bar, text="Préfixe /me à la copie", variable=self.me_prefix, font=f["label_s"],
-                       bg=BG, fg=TEXT, selectcolor=PANEL, activebackground=BG,
-                       activeforeground=WARM).pack(side="left", padx=10)
+        tk.Checkbutton(bar, text="Format /me (le jeu ajoute « l'individu »)", variable=self.me_prefix,
+                       font=f["label_s"], bg=BG, fg=TEXT, selectcolor=PANEL, activebackground=BG,
+                       activeforeground=WARM, command=self.refresh).pack(side="left", padx=10)
         tk.Button(bar, text="Tout tirer au hasard", font=f["label_s"], bg=PANEL, fg=TEXT,
                   activebackground=WARM, relief="flat", padx=10, pady=4,
                   command=self.randomize_all).pack(side="left", padx=8)
@@ -310,6 +316,7 @@ class App:
         self.synthesis = self.reading_view.synthesis
         self.copy_synth = self.reading_view.copy_synth
 
+        self.synthesis_spoken = ""
         self._resize_job = None
         self.root.bind("<Configure>", self._on_configure)
         self.show_view("reading")
@@ -400,11 +407,14 @@ class App:
         self.root.destroy()
 
     # --- actions ----------------------------------------------------------
-    def copy_text(self, text: str) -> None:
-        if self.me_prefix.get():
-            text = "/me " + text
+    def copy_text(self, spoken: str, me: str | None = None) -> None:
+        """Copy the spoken sentence, or '/me ...' (the game adds "l'individu") in /me mode."""
+        text = "/me " + me if self.me_prefix.get() and me is not None else spoken
         self.root.clipboard_clear()
         self.root.clipboard_append(text)
+
+    def copy_synthesis(self) -> None:
+        self.copy_text(self.synthesis_spoken, reading.synthesize_me(self.synthesis_spoken))
 
     def refresh(self) -> None:
         mode = self.mode.get()
@@ -412,9 +422,13 @@ class App:
             panel.update(mode)
         done = [p.result for p in self.panels if p.result]
         if len(done) == 3:
-            self.synthesis.config(text=reading.synthesize(done))
+            self.synthesis_spoken = reading.synthesize(done)
+            shown = ("l'individu " + reading.synthesize_me(self.synthesis_spoken)
+                     if self.me_prefix.get() else self.synthesis_spoken)
+            self.synthesis.config(text=shown)
             self.copy_synth.config(state="normal")
         else:
+            self.synthesis_spoken = ""
             self.synthesis.config(text="Entrez les jets des trois axes.")
             self.copy_synth.config(state="disabled")
 

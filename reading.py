@@ -71,18 +71,21 @@ def read_axis(axis_index: int, arcane_index: int, reversed_: bool) -> dict:
     sense = arcane["rev"] if reversed_ else arcane["up"]
     template = axis["rev"] if reversed_ else axis["up"]
     with_article, de_form = article_forms(arcane["name"])
-    phrase = template.format(
-        arcane_l=with_article,
-        de_arcane=de_form,
-        sens=_lower_first(sense),
-        renverse="renversée" if arcane["fem"] else "renversé",
-    )
+    fields = {
+        "arcane_l": with_article,
+        "de_arcane": de_form,
+        "sens": _lower_first(sense),
+        "renverse": "renversée" if arcane["fem"] else "renversé",
+    }
+    phrase = template.format(**fields)
+    me_phrase = axis["me_rev" if reversed_ else "me_up"].format(**fields)
     return {
         "axis": axis["label"],
         "arcane": arcane,
         "reversed": reversed_,
         "sense": sense,
         "phrase": phrase,
+        "me_phrase": me_phrase,  # without the leading "l'individu" that /me adds
     }
 
 
@@ -94,6 +97,11 @@ def synthesize(readings: list[dict]) -> str:
     if len(set(numbers)) < len(numbers):
         text += " " + DATA["synthesis_repeat"]
     return text
+
+
+def synthesize_me(spoken: str) -> str:
+    """Third-person version for /me (the game prepends "l'individu")."""
+    return DATA["me_synthesis_prefix"] + _lower_first(spoken)
 
 
 if __name__ == "__main__":

@@ -14,7 +14,9 @@
       "temps": "Passé et destin",
       "anchor": "Lignes de Ley (livre des créatures magiques, Goblin des montagnes)",
       "up": "Suivez cette ligne : elle porte {arcane_l}. Votre chemin est marqué par : {sens}.",
-      "rev": "La ligne se brise ici, sous {arcane_l} {renverse}. Votre route a été troublée par : {sens}."
+      "rev": "La ligne se brise ici, sous {arcane_l} {renverse}. Votre route a été troublée par : {sens}.",
+      "me_up": "suit une ligne du crâne du doigt : elle porte {arcane_l}, un chemin marqué par : {sens}.",
+      "me_rev": "suit une ligne du crâne du doigt : elle se brise sous {arcane_l} {renverse}, la route a été troublée par : {sens}."
     },
     {
       "id": "bosses",
@@ -25,7 +27,9 @@
       "temps": "Présent",
       "anchor": "Les quatre maisons fondées par les Wendelhart : Azuralys, Felora, Ferrox, Oragonn (Guide de Rivenguard, p. 3) : un don propre à chaque maison",
       "up": "Cette bosse trahit {arcane_l} : vous avez un don pour : {sens}.",
-      "rev": "Cette bosse est trompeuse, sous {arcane_l} {renverse} : votre don risque de virer à : {sens}."
+      "rev": "Cette bosse est trompeuse, sous {arcane_l} {renverse} : votre don risque de virer à : {sens}.",
+      "me_up": "palpe une bosse du crâne : elle trahit {arcane_l}, un don pour : {sens}.",
+      "me_rev": "palpe une bosse du crâne : elle est trompeuse, sous {arcane_l} {renverse}, le don risque de virer à : {sens}."
     },
     {
       "id": "forme",
@@ -36,7 +40,9 @@
       "temps": "Fond durable et avenir",
       "anchor": "",
       "up": "La forme de ce crâne parle {de_arcane} : vous êtes de ceux qui montrent : {sens}.",
-      "rev": "Sous {arcane_l} {renverse}, cette forme révèle : {sens}. Méfiez-vous de ce penchant."
+      "rev": "Sous {arcane_l} {renverse}, cette forme révèle : {sens}. Méfiez-vous de ce penchant.",
+      "me_up": "observe la forme du crâne : elle parle {de_arcane}, un caractère qui montre : {sens}.",
+      "me_rev": "observe la forme du crâne : sous {arcane_l} {renverse}, elle révèle : {sens}, un penchant à surveiller."
     }
   ],
   "arcanes": [
@@ -245,5 +251,6 @@
     "2": "Deux signes sont renversés : les signes se contrarient, tout dépend de vos choix.",
     "3": "Les trois signes sont renversés : le crâne parle avec gravité."
   },
-  "synthesis_repeat": "Le signe se répète, il pèse deux fois."
+  "synthesis_repeat": "Le signe se répète, il pèse deux fois.",
+  "me_synthesis_prefix": "conclut sa lecture : "
 }
