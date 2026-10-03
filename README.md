@@ -4,6 +4,8 @@ Petit outil de jeu de rôle pour **Elixir RP** : la lecture du crâne chauve sel
 
 Tout le contenu (guide d'Oswald Bald, sens des arcanes, phrases) est de l'**invention**. Projet de joueur, sans lien officiel avec le serveur.
 
+> **Nouveau : la v2** (lecture du crâne façon chiromancie, trois jets `/roll 1-20` et jet de polarité) est sur la branche [`v2`](../../tree/v2). Téléchargez son zip dans la release « Cranomancie v2.x ». Cette page décrit la v1 (lecture façon tarot).
+
 ## Installation (Windows)
 
 1. Téléchargez le dernier zip dans [Releases](../../releases/latest) et décompressez-le.
