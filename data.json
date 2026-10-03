@@ -1,0 +1,249 @@
+{
+  "meta": {
+    "title": "Cranomancie",
+    "subtitle": "La lecture du crâne chauve selon Oswald Bald",
+    "author": "Oswald Bald"
+  },
+  "axes": [
+    {
+      "id": "lignes",
+      "label": "Lignes",
+      "nom": "Le Chemin",
+      "observe": "Sutures, plis et sillons du cuir chevelu",
+      "question": "D'où vient la personne, où va sa route ?",
+      "temps": "Passé et destin",
+      "anchor": "Lignes de Ley (livre des créatures magiques, Goblin des montagnes)",
+      "up": "Suivez cette ligne : elle porte {arcane_l}. Votre chemin est marqué par : {sens}.",
+      "rev": "La ligne se brise ici, sous {arcane_l} {renverse}. Votre route a été troublée par : {sens}."
+    },
+    {
+      "id": "bosses",
+      "label": "Bosses",
+      "nom": "Les Dons",
+      "observe": "Reliefs et protubérances du crâne, zone par zone",
+      "question": "De quoi est-elle capable, qu'est-ce qui l'attire ?",
+      "temps": "Présent",
+      "anchor": "Les quatre maisons fondées par les Wendelhart : Azuralys, Felora, Ferrox, Oragonn (Guide de Rivenguard, p. 3) : un don propre à chaque maison",
+      "up": "Cette bosse trahit {arcane_l} : vous avez un don pour : {sens}.",
+      "rev": "Cette bosse est trompeuse, sous {arcane_l} {renverse} : votre don risque de virer à : {sens}."
+    },
+    {
+      "id": "forme",
+      "label": "Forme",
+      "nom": "La Nature",
+      "observe": "Contour général, proportions, symétrie",
+      "question": "Qui est-elle au fond, vers quoi tend-elle ?",
+      "temps": "Fond durable et avenir",
+      "anchor": "",
+      "up": "La forme de ce crâne parle {de_arcane} : vous êtes de ceux qui montrent : {sens}.",
+      "rev": "Sous {arcane_l} {renverse}, cette forme révèle : {sens}. Méfiez-vous de ce penchant."
+    }
+  ],
+  "arcanes": [
+    {
+      "n": 0,
+      "numeral": "0",
+      "name": "Le Mat",
+      "fem": false,
+      "up": "Départ, liberté, pas dans l'inconnu",
+      "rev": "Imprudence, errance",
+      "anchor": "Le portail du Salut ouvert par Hazelyonn Wendelhart : tous les mages partent vers Rivenguard sans rien savoir de ce qui les attend (HM p.5)"
+    },
+    {
+      "n": 1,
+      "numeral": "I",
+      "name": "Le Bateleur",
+      "fem": false,
+      "up": "Habileté, initiative, bons outils",
+      "rev": "Maladresse, tour de passe-passe",
+      "anchor": "Baguette et lettres de l'Ombrelune, chaudron et mortier de Clauser : le matériel de l'élève (GR p.2)"
+    },
+    {
+      "n": 2,
+      "numeral": "II",
+      "name": "La Papesse",
+      "fem": true,
+      "up": "Savoir caché, secret gardé",
+      "rev": "Secret qui fuit, ignorance",
+      "anchor": "Ministère des Mystères, département secret sous le Haut Conseil (HM p.9, GR)"
+    },
+    {
+      "n": 3,
+      "numeral": "III",
+      "name": "L'Impératrice",
+      "fem": true,
+      "up": "Création, abondance, protection",
+      "rev": "Gaspillage, étouffement",
+      "anchor": "Athénaïs Wendelhart, fondatrice de la maison Felora, « la regrettée » (HM p.7, GR p.3)"
+    },
+    {
+      "n": 4,
+      "numeral": "IV",
+      "name": "L'Empereur",
+      "fem": false,
+      "up": "Autorité, ordre, stabilité",
+      "rev": "Rigidité, abus de pouvoir",
+      "anchor": "Hazelyonn Wendelhart, Ministre de la Magie ; devise « Des braises émerge le feu » (HM p.7)"
+    },
+    {
+      "n": 5,
+      "numeral": "V",
+      "name": "Le Pape",
+      "fem": false,
+      "up": "Tradition, enseignement, règle",
+      "rev": "Dogme, règle contournée",
+      "anchor": "Règlement académique et mentors ; Ministère des Arts et Traditions mystiques (GR p.4, HM)"
+    },
+    {
+      "n": 6,
+      "numeral": "VI",
+      "name": "L'Amoureux",
+      "fem": false,
+      "up": "Choix, lien, engagement",
+      "rev": "Hésitation, loyauté divisée",
+      "anchor": "Les quatre maisons, quatre chemins, et le devoir de loyauté envers sa Maison (HM p.2, GR p.3)"
+    },
+    {
+      "n": 7,
+      "numeral": "VII",
+      "name": "Le Chariot",
+      "fem": false,
+      "up": "Élan, déplacement maîtrisé, victoire",
+      "rev": "Brutalité sans stratégie",
+      "anchor": "Statues d'Helios pour se déplacer (GR p.8) ; à l'envers, les chars des golbuts qui se tirent dessus entre eux (HM p.4)"
+    },
+    {
+      "n": 8,
+      "numeral": "VIII",
+      "name": "La Justice",
+      "fem": true,
+      "up": "Équilibre, verdict juste, loi",
+      "rev": "Injustice, sanction arbitraire",
+      "anchor": "La Garde de Velorn Wendelhart, brassards à tête de tigre (HM p.8, GR)"
+    },
+    {
+      "n": 9,
+      "numeral": "IX",
+      "name": "L'Ermite",
+      "fem": false,
+      "up": "Recherche solitaire, prudence",
+      "rev": "Isolement, fuite",
+      "anchor": "Le Goblin timide et le Goblin des montagnes : solitaires, nomades, furtifs, voyageurs des lignes de Ley (CM)"
+    },
+    {
+      "n": 10,
+      "numeral": "X",
+      "name": "La Roue de Fortune",
+      "fem": true,
+      "up": "Cycle, tournant du destin",
+      "rev": "Revers, cycle qui se répète",
+      "anchor": "Trois académies Wendelhart en succession (2040, 2043, la troisième) ; « le reste, c'est à vous de l'écrire » (HM p.6)"
+    },
+    {
+      "n": 11,
+      "numeral": "XI",
+      "name": "La Force",
+      "fem": true,
+      "up": "Courage, maîtrise de l'instinct",
+      "rev": "Perte de contrôle, colère",
+      "anchor": "Le Lycan Alpha : transformation à sa guise, hurlement de domination (CM) ; Hominis Forma détransforme un lycan (SP)"
+    },
+    {
+      "n": 12,
+      "numeral": "XII",
+      "name": "Le Pendu",
+      "fem": false,
+      "up": "Suspension, sacrifice, autre point de vue",
+      "rev": "Attente vaine, sacrifice inutile",
+      "anchor": "L'académie bâtie sur une île flottante (HM p.6)"
+    },
+    {
+      "n": 13,
+      "numeral": "XIII",
+      "name": "L'Arcane sans nom",
+      "fem": false,
+      "up": "Fin, transformation, passage",
+      "rev": "Résistance au changement, deuil refusé",
+      "anchor": "Pôle Morgue de l'Institution médicale, cursologie (HM p.11, GR)"
+    },
+    {
+      "n": 14,
+      "numeral": "XIV",
+      "name": "Tempérance",
+      "fem": true,
+      "up": "Mélange juste, soin, patience",
+      "rev": "Excès, mauvais dosage",
+      "anchor": "Élixirologie de l'Institution médicale ; poudre d'élixir de Perlimpinpin (HM, GR p.2)"
+    },
+    {
+      "n": 15,
+      "numeral": "XV",
+      "name": "Le Diable",
+      "fem": false,
+      "up": "Tentation, appât du gain, attachement",
+      "rev": "Libération, chaîne brisée",
+      "anchor": "Le traître et la promesse de richesses faite aux golbuts (HM p.3) ; le Goblin qui repère une pièce d'or ; le sang de Fée, drogue des vampires (CM)"
+    },
+    {
+      "n": 16,
+      "numeral": "XVI",
+      "name": "La Maison-Dieu",
+      "fem": true,
+      "up": "Bouleversement, ruine soudaine",
+      "rev": "Catastrophe évitée de justesse",
+      "anchor": "Destruction de l'académie en 2040 ; séisme, ville ensevelie sous l'eau onze ans après (HM p.2, 6)"
+    },
+    {
+      "n": 17,
+      "numeral": "XVII",
+      "name": "L'Étoile",
+      "fem": true,
+      "up": "Espoir, guidance, renouveau",
+      "rev": "Désillusion, repère perdu",
+      "anchor": "Boussole enchantée de l'Ombrelune (GR p.9) ; la troisième académie qui « ouvre ses portes » (HM p.6) ; les Fées, espèce disparue (CM)"
+    },
+    {
+      "n": 18,
+      "numeral": "XVIII",
+      "name": "La Lune",
+      "fem": true,
+      "up": "Illusion, peur, nuit",
+      "rev": "Vérité qui perce, peur dépassée",
+      "anchor": "Lieux dangereux la nuit (pas avant 8h ni après 18h), forêt des Ombres interdite (GR p.1) ; sort Detectio qui révèle une illusion (SP)"
+    },
+    {
+      "n": 19,
+      "numeral": "XIX",
+      "name": "Le Soleil",
+      "fem": false,
+      "up": "Clarté, joie, vitalité",
+      "rev": "Éclat trop vif, joie de façade",
+      "anchor": "Le Chardon Rieur, confiserie « bonheur » (GR) ; le soleil qui brûle les vampires (CM)"
+    },
+    {
+      "n": 20,
+      "numeral": "XX",
+      "name": "Le Jugement",
+      "fem": false,
+      "up": "Appel, bilan, renaissance",
+      "rev": "Sourd à l'appel, verdict évité",
+      "anchor": "Le traître jugé, exécuté, supprimé des registres (HM p.5) ; recensement au ministère (GR p.1)"
+    },
+    {
+      "n": 21,
+      "numeral": "XXI",
+      "name": "Le Monde",
+      "fem": false,
+      "up": "Accomplissement, tout est réuni",
+      "rev": "Inachevé, dernier pas manquant",
+      "anchor": "Le Ministère de la Magie, lieu le plus important de Rivenguard, où siègent le Haut Conseil et toutes les branches (GR)"
+    }
+  ],
+  "synthesis": {
+    "0": "Les trois signes s'accordent : le présage est favorable.",
+    "1": "Un seul signe est renversé : le présage est nuancé, avec un point de vigilance sur l'axe de la carte renversée.",
+    "2": "Deux signes sont renversés : les signes se contrarient, tout dépend de vos choix.",
+    "3": "Les trois signes sont renversés : le crâne parle avec gravité."
+  },
+  "synthesis_repeat": "Le signe se répète, il pèse deux fois."
+}
