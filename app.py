@@ -68,7 +68,12 @@ class App:
         head = tk.Frame(self.root, bg=BG)
         self.head = head
         head.pack(pady=(10, 2))
-        tk.Label(head, text=meta["title"], font=f["title"], bg=BG, fg=TEXT).pack()
+        # Retro arcade title drawn with Pillow (re-rendered when the window scale changes); plain text without it.
+        self.title_text = meta["title"]
+        self._title_photo = None
+        self._title_key = None
+        self.title_label = tk.Label(head, text=self.title_text, font=f["title"], bg=BG, fg=TEXT)
+        self.title_label.pack()
         tk.Label(head, text=meta["subtitle"], font=f["small"], bg=BG, fg=MUTED).pack()
 
         bar = tk.Frame(self.root, bg=BG)
@@ -133,6 +138,22 @@ class App:
             self.fonts[name].configure(size=max(7, int(size * self.scale)))
         self.signs_view.rescale()
         self.reading_view.relayout_soon()
+        self.update_title()
+
+    def update_title(self) -> None:
+        """Pixelated amber title sized with the window; falls back to the plain text label."""
+        height = max(60, int(120 * self.scale))
+        if self._title_key == height:
+            return
+        try:
+            from PIL import ImageTk
+            from title_art import render_title
+            image = render_title(self.title_text, height, (0x1B, 0x1A, 0x18))
+        except Exception:
+            return
+        self._title_key = height
+        self._title_photo = ImageTk.PhotoImage(image)
+        self.title_label.config(image=self._title_photo, text="")
 
     def show_view(self, name: str) -> None:
         self.current_view = name
