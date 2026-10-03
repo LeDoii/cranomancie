@@ -28,6 +28,26 @@ EMBLEMS = {
 }
 
 
+# Arcane number -> (file in illustrations/, crop box) for framed artworks (fan art provided by the user).
+ILLUSTRATIONS_DIR = Path(__file__).resolve().parent / "illustrations"
+ILLUSTRATIONS = {
+    20: ("morzhul.png", (225, 0, 1137, 912)),  # XX Le Jugement: Morzhul, emissary of death (fan art)
+}
+
+
+def _paste_illustration(img: Image.Image, d: ImageDraw.ImageDraw, n: int, cx: float, cy: float, span: float) -> bool:
+    """Paste a square crop of the artwork, with an ink frame; False when absent."""
+    entry = ILLUSTRATIONS.get(n)
+    if not entry or not (ILLUSTRATIONS_DIR / entry[0]).exists():
+        return False
+    art = Image.open(ILLUSTRATIONS_DIR / entry[0]).convert("RGB").crop(entry[1])
+    art = art.resize((int(span), int(span)), Image.LANCZOS)
+    x, y = int(cx - span / 2), int(cy - span / 2)
+    img.paste(art, (x, y))
+    d.rectangle([x, y, x + int(span), y + int(span)], outline=INK, width=SCALE * 2)
+    return True
+
+
 def _paste_emblems(img: Image.Image, n: int, cx: float, cy: float, span: float) -> bool:
     """Paste the emblem(s) of arcane n centred on (cx, cy); False when nothing could be drawn."""
     names = EMBLEMS.get(n, [])
@@ -81,7 +101,9 @@ def render_card(arcane: dict, reversed_: bool, size: tuple[int, int] = (240, 400
     numeral_font = _font("Italiana-Regular.ttf", 34)
     d.text((w / 2, 62 * SCALE), arcane["numeral"], font=numeral_font, fill=INK, anchor="mm")
 
-    if not _paste_emblems(img, arcane["n"], w / 2, h * 0.46, w * 0.74):
+    drawn = (_paste_illustration(img, d, arcane["n"], w / 2, h * 0.46, w * 0.80)
+             or _paste_emblems(img, arcane["n"], w / 2, h * 0.46, w * 0.74))
+    if not drawn:
         _sigil(d, w / 2, h * 0.46, w * 0.30, arcane["n"])
 
     name_font = _font("Italiana-Regular.ttf", 26)

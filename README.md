@@ -41,6 +41,10 @@ Au démarrage, l'application vérifie s'il existe une nouvelle release de ce dé
 
 Les blasons des maisons et des Wendelhart (dossier `emblems/`) viennent de la page lore du wiki du serveur (<https://wiki.elixirrp.fr/fr/lore>) et appartiennent à leurs auteurs. Si l'un d'eux manque, la carte affiche un sceau géométrique à la place.
 
+## Illustrations
+
+L'illustration de Morzhul (carte XX, dossier `illustrations/`) est un fan art validé sur le Discord du serveur, publié ici avec l'accord de son auteur.
+
 ## Polices
 
 Italiana, Crimson Pro et Geist Mono (dossier `fonts/`), sous licence SIL Open Font License.
