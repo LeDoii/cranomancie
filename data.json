@@ -94,11 +94,11 @@
     {
       "n": 5,
       "numeral": "V",
-      "name": "Le Pape",
+      "name": "Le Mentor",
       "fem": false,
       "up": "Tradition, enseignement, règle",
       "rev": "Dogme, règle contournée",
-      "anchor": "Règlement académique et mentors ; Ministère des Arts et Traditions mystiques (GR p.4, HM)"
+      "anchor": "Règlement académique et mentors (« voir le mentor de Sortilège pour apprendre ses sorts », GR p.1) ; Ministère des Arts et Traditions mystiques (GR p.4, HM)"
     },
     {
       "n": 6,
@@ -143,7 +143,7 @@
       "fem": true,
       "up": "Cycle, tournant du destin",
       "rev": "Revers, cycle qui se répète",
-      "anchor": "Trois académies Wendelhart en succession (2040, 2043, la troisième) ; « le reste, c'est à vous de l'écrire » (HM p.6)"
+      "anchor": "Trois académies Wendelhart en succession (2040, 2043, la troisième) ; « le reste, c'est à vous de l'écrire » (HM p.6) ; les quatre maisons fondées par les Wendelhart : Azuralys, Felora, Ferrox, Oragonn (GR p.3)"
     },
     {
       "n": 11,

@@ -17,6 +17,34 @@ GREY = "#948B78"
 
 SCALE = 2  # drawn at 2x then downsampled for smooth lines
 
+# Arcane number -> house emblems from the wiki lore page (emblems/ folder; sigil used when a file is missing).
+EMBLEMS_DIR = Path(__file__).resolve().parent / "emblems"
+EMBLEMS = {
+    3: ["felora"],                                    # III L'Impératrice: Athénaïs, founder of Felora
+    4: ["azuralys"],                                  # IV L'Empereur: Hazelyonn, founder of Azuralys
+    5: ["wendelhart_blason"],                         # V Le Mentor: Académie Wendelhart
+    10: ["azuralys", "felora", "ferrox", "oragonn"],  # X La Roue de Fortune: the four houses around the wheel
+    8: ["ferrox"],                                    # VIII La Justice: the Garde of Velorn (Ferrox)
+}
+
+
+def _paste_emblems(img: Image.Image, n: int, cx: float, cy: float, span: float) -> bool:
+    """Paste the emblem(s) of arcane n centred on (cx, cy); False when nothing could be drawn."""
+    names = EMBLEMS.get(n, [])
+    files = [EMBLEMS_DIR / f"{name}.png" for name in names]
+    if not files or not all(f.exists() for f in files):
+        return False
+    side = span if len(files) == 1 else span / 2
+    for i, path in enumerate(files):
+        emblem = Image.open(path).convert("RGBA").resize((int(side), int(side)), Image.LANCZOS)
+        if len(files) == 1:
+            x, y = cx - side / 2, cy - side / 2
+        else:
+            x = cx - side + (i % 2) * side
+            y = cy - side + (i // 2) * side
+        img.paste(emblem, (int(x), int(y)), emblem)
+    return True
+
 
 def _font(name: str, size: int) -> ImageFont.FreeTypeFont:
     return ImageFont.truetype(str(FONTS / name), size * SCALE)
@@ -53,7 +81,8 @@ def render_card(arcane: dict, reversed_: bool, size: tuple[int, int] = (240, 400
     numeral_font = _font("Italiana-Regular.ttf", 34)
     d.text((w / 2, 62 * SCALE), arcane["numeral"], font=numeral_font, fill=INK, anchor="mm")
 
-    _sigil(d, w / 2, h * 0.46, w * 0.30, arcane["n"])
+    if not _paste_emblems(img, arcane["n"], w / 2, h * 0.46, w * 0.74):
+        _sigil(d, w / 2, h * 0.46, w * 0.30, arcane["n"])
 
     name_font = _font("Italiana-Regular.ttf", 26)
     name = arcane["name"]

@@ -37,6 +37,10 @@ La fenêtre s'ouvre sans console. En cas de plantage, la cause est écrite dans 
 
 Au démarrage, l'application vérifie s'il existe une nouvelle release de ce dépôt. Si oui, un bandeau propose « Mettre à jour » : le zip est téléchargé depuis les releases de ce dépôt uniquement, son empreinte SHA-256 est vérifiée, l'ancienne version est copiée dans `_backup/`, les dépendances manquantes sont installées, puis l'application redémarre. Rien ne se fait sans votre clic.
 
+## Emblèmes
+
+Les blasons des maisons et des Wendelhart (dossier `emblems/`) viennent de la page lore du wiki du serveur (<https://wiki.elixirrp.fr/fr/lore>) et appartiennent à leurs auteurs. Si l'un d'eux manque, la carte affiche un sceau géométrique à la place.
+
 ## Polices
 
 Italiana, Crimson Pro et Geist Mono (dossier `fonts/`), sous licence SIL Open Font License.
