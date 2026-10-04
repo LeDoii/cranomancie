@@ -21,7 +21,7 @@ from widgets import ALERT, BG, GOOD, MUTED, PANEL, TEXT, WARM
 
 FONTS = Path(__file__).resolve().parent / "fonts"
 # Font sizes at scale 1.0 (window around 1500x1000); everything scales with the window.
-BASE_SIZES = {"title": 40, "title_s": 20, "body": 17, "small": 13, "label": 12, "label_s": 10, "entry": 16, "emoji": 12}
+BASE_SIZES = {"title": 40, "title_s": 20, "body": 17, "small": 13, "label": 12, "label_s": 10, "entry": 16, "emoji": 12, "big": 30}
 
 
 def load_private_fonts() -> None:
@@ -56,7 +56,7 @@ class App:
         display = pick_family(["Italiana"], serif)
         mono = pick_family(["Geist Mono"], "Consolas")
         families = {"title": display, "title_s": display, "body": serif, "small": serif, "label": mono,
-                    "label_s": mono, "entry": mono, "emoji": "Segoe UI Emoji"}
+                    "label_s": mono, "entry": mono, "emoji": "Segoe UI Emoji", "big": serif}
         self.fonts = {name: tkfont.Font(root=self.root, family=families[name], size=size,
                                         weight="bold" if name == "label" else "normal")
                       for name, size in BASE_SIZES.items()}
@@ -67,18 +67,18 @@ class App:
         self.update_bar = tk.Frame(self.root, bg=WARM)  # packed only when an update exists
         head = tk.Frame(self.root, bg=BG)
         self.head = head
-        head.pack(pady=(10, 2))
+        head.pack(pady=(4, 0))
         # Retro arcade title drawn with Pillow (re-rendered when the window scale changes); plain text without it.
         self.title_text = meta["title"]
         self._title_photo = None
         self._title_key = None
         self.title_label = tk.Label(head, text=self.title_text, font=f["title"], bg=BG, fg=TEXT)
         self.title_label.pack()
-        tk.Label(head, text=meta["subtitle"], font=f["small"], bg=BG, fg=MUTED).pack()
+        tk.Label(head, text=meta["subtitle"], font=f["small"], bg=BG, fg=MUTED).pack(pady=(0, 2))
 
         bar = tk.Frame(self.root, bg=BG)
-        bar.pack(pady=4)
-        self.me_prefix = tk.BooleanVar(value=False)
+        bar.pack(pady=(2, 4))
+        self.me_prefix = tk.BooleanVar(value=True)  # /me format by default
         tk.Checkbutton(bar, text="Format /me (le jeu ajoute « l'individu »)", variable=self.me_prefix,
                        font=f["label_s"], bg=BG, fg=TEXT, selectcolor=PANEL, activebackground=BG,
                        activeforeground=WARM, command=self.refresh).pack(side="left", padx=10)
@@ -86,10 +86,6 @@ class App:
         tk.Checkbutton(bar, text="Polarité manuelle (jet fait par un autre joueur)", variable=self.manual_polarity,
                        font=f["label_s"], bg=BG, fg=TEXT, selectcolor=PANEL, activebackground=BG,
                        activeforeground=WARM, command=self.on_polarity_mode).pack(side="left", padx=10)
-        self.show_viktor = tk.BooleanVar(value=True)
-        tk.Checkbutton(bar, text="Viktor", variable=self.show_viktor, font=f["label_s"], bg=BG, fg=TEXT,
-                       selectcolor=PANEL, activebackground=BG, activeforeground=WARM,
-                       command=self.toggle_viktor).pack(side="left", padx=10)
         tk.Button(bar, text="Tout tirer au hasard", font=f["label_s"], bg=PANEL, fg=TEXT, activebackground=WARM,
                   relief="flat", padx=10, pady=4, command=self.randomize_all).pack(side="left", padx=8)
         self.view_buttons = {}
@@ -220,9 +216,6 @@ class App:
         text = "/me " + me if self.me_prefix.get() and me is not None else spoken
         self.root.clipboard_clear()
         self.root.clipboard_append(text)
-
-    def toggle_viktor(self) -> None:
-        self.reading_view.set_viktor(self.show_viktor.get())
 
     def on_polarity_mode(self) -> None:
         """Switching between UI-rolled and manually entered polarity starts every axis' polarity afresh."""

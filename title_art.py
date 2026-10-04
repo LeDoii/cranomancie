@@ -42,4 +42,9 @@ def render_title(text: str, height: int, bg: tuple[int, int, int]) -> Image.Imag
         draw.line([(0, y), (width, y)], fill=100, width=max(1, step // 3))
     lit = glow.point(lambda v: 255 if v > 6 else 0)
     canvas.paste(Image.new("RGB", canvas.size, (0, 0, 0)), (0, 0), ImageChops.multiply(lines, lit))
+    # trim the empty rows above and below the lit area (keeping room for the glow): the block stays compact
+    box = glow.point(lambda v: 255 if v > 6 else 0).getbbox()
+    if box:
+        margin = int(height * 0.04)
+        canvas = canvas.crop((0, max(0, box[1] - margin), width, min(height, box[3] + margin)))
     return canvas

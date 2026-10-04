@@ -205,7 +205,7 @@ class SignsView(tk.Frame):
         entry.bind("<KeyRelease>", lambda _e: self.populate())
         self.count = tk.Label(top, font=f["label_s"], bg=BG, fg=MUTED)
         self.count.pack(side="left")
-        tk.Label(self, text="Numéro (15), signe, mot-clé ou définition. Clic sur un signe : détail et modification (✎ = personnalisé) ; Échap : fermer.",
+        tk.Label(self, text="Numéro (15), signe, mot-clé ou définition. Clic ou flèches : détail et modification (✎ = personnalisé) ; Échap : fermer.",
                  font=f["small"], bg=BG, fg=MUTED).pack(anchor="w", padx=16)
 
         self.main = tk.Frame(self, bg=BG)
@@ -230,6 +230,9 @@ class SignsView(tk.Frame):
 
         self.detail = DetailPanel(self.main, app, self)
         app.root.bind("<Escape>", self._on_escape, add="+")
+        for key, step in {"<Left>": (-1, 0), "<Right>": (1, 0), "<Up>": (0, -1), "<Down>": (0, 1)}.items():
+            app.root.bind(key, lambda _e, s=step: self._arrow(*s), add="+")
+            entry.bind(key, lambda _e, s=step: self._arrow(*s))  # in the search box the arrows navigate too
         self.populate()
 
     def _wheel(self, event: tk.Event) -> None:
@@ -242,6 +245,38 @@ class SignsView(tk.Frame):
         self.detail.pack_propagate(False)
         self.detail.show(axis_index, roll)
         self._highlight()
+
+    def _arrow(self, dx: int, dy: int) -> str | None:
+        """Move the selection with the arrow keys: up/down inside a column, left/right to the next column."""
+        if getattr(self.app, "current_view", "") != "signs" or self.detail.editing or not self.rows:
+            return None  # other views, or typing in the edit form: leave the keys alone
+        keys = sorted(self.rows)
+        if self.selected not in self.rows:
+            target = keys[0]
+        else:
+            col, n = self.selected
+            if dy:
+                column = [m for c, m in keys if c == col]
+                target = (col, column[max(0, min(len(column) - 1, column.index(n) + dy))])
+            else:
+                other = [m for c, m in keys if c == col + dx]
+                target = (col + dx, min(other, key=lambda m: abs(m - n))) if other else self.selected
+        self.show_detail(*target)
+        self._see(self.rows[target])
+        return "break"
+
+    def _see(self, label: tk.Label) -> None:
+        """Scroll the list so that the selected sign is fully visible."""
+        self.canvas.update_idletasks()
+        total = max(1, self.grid_frame.winfo_height())
+        top = self.canvas.yview()[0] * total
+        view = self.canvas.winfo_height()
+        y0 = label.winfo_rooty() - self.grid_frame.winfo_rooty()
+        y1 = y0 + label.winfo_height()
+        if y0 < top:
+            self.canvas.yview_moveto(max(0.0, (y0 - 8) / total))
+        elif y1 > top + view:
+            self.canvas.yview_moveto(min(1.0, (y1 + 8 - view) / total))
 
     def _on_escape(self, _event: tk.Event) -> None:
         if getattr(self.app, "current_view", "") == "signs":

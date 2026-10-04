@@ -60,10 +60,9 @@ def read_axis(axis_index: int, roll: int, favorable: bool, polarity_value: int |
 
 
 def detail_line(r: dict) -> str:
-    """One axis of the conclusion: 'Lignes : ligne brisée, favorable (polarité 14, pair), une rupture salutaire.'"""
+    """One axis of the conclusion, for the chat: 'Lignes : ligne brisée, favorable, une rupture salutaire.'
+    (the polarity roll itself is not repeated: the axis panel shows it)."""
     polarity = "favorable" if r["favorable"] else "défavorable"
-    if r["polarity_value"] is not None:
-        polarity += f" (polarité {r['polarity_value']}, {'pair' if r['polarity_value'] % 2 == 0 else 'impair'})"
     return f"{r['axis']} : {_lower_first(r['sign']['sign'])}, {polarity}, {_lower_first(r['meaning'])}."
 
 
