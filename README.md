@@ -9,7 +9,7 @@ Tout le contenu (guide d'Oswald Bald, signes, définitions, phrases) est de l'**
 1. Téléchargez le zip `cranomancie-v2.x.y.zip` dans les [releases](../../releases) (choisissez une release « v2 ») et décompressez-le.
 2. Double-cliquez sur `cranomancie.bat`.
 
-Au premier lancement, `cranomancie.bat` installe seul ce qui manque : Python (proposition d'installation via `winget` s'il est absent) et Pillow (`requirements.txt`, pour l'image de Viktor). La fenêtre s'ouvre sans console ; en cas de plantage, la cause est écrite dans `crash.log`.
+Au premier lancement, `cranomancie.bat` installe seul ce qui manque : Python (proposition d'installation via `winget` s'il est absent) et Pillow (`requirements.txt`, pour l'image de fond). La fenêtre s'ouvre sans console ; en cas de plantage, la cause est écrite dans `crash.log`.
 
 ## Utilisation
 
@@ -18,10 +18,11 @@ Au premier lancement, `cranomancie.bat` installe seul ce qui manque : Python (pr
 - **Polarité** : le bouton « Lancer la polarité » de chaque axe fait un jet de 1 à 20 : pair = lecture favorable, impair = défavorable. Il peut être relancé. Avec la case **Polarité manuelle**, le jet est fait par un autre joueur en jeu et vous saisissez son résultat.
 - **Aléatoire** (par axe) et **Tout tirer au hasard** tirent le jet et la polarité.
 - **Conclusion** : quatre lignes, chacune avec son propre bouton **Copier** (un message de chat par ligne) : une phrase selon le nombre d'axes favorables, puis une ligne par axe (signe et définition), en vert si l'axe est favorable et en rouge s'il est défavorable. Le texte copié écrit la polarité en toutes lettres (le chat n'a pas de couleurs). **Tout copier** met l'ensemble sur une seule ligne.
-- **Viktor** : une illustration de Viktor tenant une boule de cristal apparaît en filigrane derrière les trois panneaux (case « Viktor » pour la masquer).
-- **Bibliothèque des signes** : les 60 signes, recherche (numéro, signe, mot-clé), volet de détail avec les deux définitions. Un clic sur un signe depuis la lecture y mène.
+- **Décor** : la salle de Viktor (lui, assis à son bureau, lisant, avec son corbeau sur l'épaule) apparaît en filigrane derrière les trois panneaux.
+- **Agrandir** : le bouton « ⤢ Agrandir » à côté de la conclusion l'affiche en grand sur toute la page (pratique pour un stream) ; « ⤡ Réduire » ou Échap pour revenir.
+- **Bibliothèque des signes** : les 60 signes, recherche (numéro, signe, mot-clé), volet de détail avec les deux définitions. Un clic sur un signe depuis la lecture y mène ; les flèches du clavier parcourent la liste.
 - **Modifier les signes** : dans la bibliothèque, « ✎ Modifier » ouvre un formulaire (nom du signe, forme utilisée dans la phrase, définition favorable, définition défavorable). Les modifications sont enregistrées dans `%APPDATA%\Cranomancie\custom_signs.json`, **en dehors du dossier de l'application** : elles survivent aux mises à jour et aux nouveaux téléchargements. Seuls les champs que vous changez sont mémorisés, les autres continuent de suivre les définitions fournies. Un signe modifié est marqué ✎ dans la liste ; son aperçu a un bouton « ↺ Réinitialiser » qui remet la version d'origine (le bouton n'apparaît pas pour un signe non modifié).
-- **Copier la phrase** prépare le texte à dire en jeu. Avec l'option **Format /me**, la phrase est réécrite à la troisième personne et copiée avec `/me` devant : le jeu ajoute lui-même « l'individu ».
+- **Copier la phrase** prépare le texte à dire en jeu. L'option **Format /me**, cochée par défaut, réécrit la phrase à la troisième personne et la copie avec `/me` devant : le jeu ajoute lui-même « l'individu ». Décochez-la pour une phrase simple.
 
 ## En cas de problème
 
