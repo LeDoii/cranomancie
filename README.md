@@ -1,0 +1,46 @@
+# CRANOMANCIE 2000 (Cranomancie v2) : lecture du crâne chauve façon chiromancie
+
+Petit outil de jeu de rôle pour **Elixir RP** : la lecture du crâne chauve selon Oswald Bald. Trois jets `/roll 1-20` (un par axe : Lignes, Imperfections, Forme) désignent chacun un signe, puis un jet de polarité décide si sa lecture est favorable ou défavorable.
+
+Tout le contenu (guide d'Oswald Bald, signes, définitions, phrases) est de l'**invention**. Projet de joueur, sans lien officiel avec le serveur.
+
+## Installation (Windows)
+
+1. Téléchargez le zip `cranomancie-v2.x.y.zip` dans les [releases](../../releases) et décompressez-le.
+2. Double-cliquez sur `cranomancie.bat`.
+
+Au premier lancement, `cranomancie.bat` installe seul ce qui manque : Python (proposition d'installation via `winget` s'il est absent) et Pillow (`requirements.txt`, pour l'image de fond). La fenêtre s'ouvre sans console ; en cas de plantage, la cause est écrite dans `crash.log`.
+
+## Utiliser en ligne
+
+Une version web, sans installation, est disponible : <https://ledoii.github.io/cranomancie/>. Mêmes trois axes, même bibliothèque ; vos modifications de signes restent dans votre navigateur.
+
+## Utilisation
+
+- **Trois axes**, chacun avec son jet `/roll 1-20` : Lignes (le chemin), Imperfections (les marques), Forme (la nature). Un même numéro n'a pas la même définition d'un axe à l'autre.
+- Chaque champ de jet a des flèches ▲▼ (ou les touches ↑↓←→, la molette) et un bouton 🎲.
+- **Polarité** : le bouton « Lancer la polarité » de chaque axe fait un jet de 1 à 20 : pair = lecture favorable, impair = défavorable. Il peut être relancé. Avec la case **Polarité manuelle**, le jet est fait par un autre joueur en jeu et vous saisissez son résultat.
+- **Aléatoire** (par axe) et **Tout tirer au hasard** tirent le jet et la polarité.
+- **Conclusion** : quatre lignes, chacune avec son propre bouton **Copier** (un message de chat par ligne) : une phrase selon le nombre d'axes favorables, puis une ligne par axe (signe et définition), en vert si l'axe est favorable et en rouge s'il est défavorable. Le texte copié écrit la polarité en toutes lettres (le chat n'a pas de couleurs). **Tout copier** met l'ensemble sur une seule ligne.
+- **Décor** : la salle de Viktor (lui, assis à son bureau, lisant, avec son corbeau sur l'épaule) apparaît en filigrane derrière les trois panneaux.
+- **Agrandir** : le bouton « ⤢ Agrandir » à côté de la conclusion l'affiche en grand sur toute la page (pratique pour un stream) ; « ⤡ Réduire » ou Échap pour revenir.
+- **Bibliothèque des signes** : les 60 signes, recherche (numéro, signe, mot-clé), volet de détail avec les deux définitions. Un clic sur un signe depuis la lecture y mène ; les flèches du clavier parcourent la liste.
+- **Modifier les signes** : dans la bibliothèque, « ✎ Modifier » ouvre un formulaire (nom du signe, forme utilisée dans la phrase, définition favorable, définition défavorable). Les modifications sont enregistrées dans `%APPDATA%\Cranomancie\custom_signs.json`, **en dehors du dossier de l'application** : elles survivent aux mises à jour et aux nouveaux téléchargements. Seuls les champs que vous changez sont mémorisés, les autres continuent de suivre les définitions fournies. Un signe modifié est marqué ✎ dans la liste ; son aperçu a un bouton « ↺ Réinitialiser » qui remet la version d'origine (le bouton n'apparaît pas pour un signe non modifié).
+- **Copier la phrase** prépare le texte à dire en jeu. L'option **Format /me**, cochée par défaut, réécrit la phrase à la troisième personne et la copie avec `/me` devant : le jeu ajoute lui-même « l'individu ». Décochez-la pour une phrase simple.
+
+## En cas de problème
+
+- **Windows affiche « Windows a protégé votre ordinateur » ou un avertissement de sécurité** en ouvrant `cranomancie.bat` : cliquez sur *Informations complémentaires*, puis *Exécuter quand même*. C'est un simple script texte, lisible avec le Bloc-notes.
+- **« winget n'est pas disponible »** (Windows 10 ancien) : installez Python 3.12 depuis <https://www.python.org/downloads/> en cochant *Add python.exe to PATH* et l'option *tcl/tk and IDLE*, puis relancez `cranomancie.bat`.
+- **Python vient d'être installé mais n'est pas détecté** : fermez la fenêtre et relancez `cranomancie.bat`.
+- **`winget` demande une confirmation** de Windows : acceptez-la.
+- **L'application se ferme aussitôt** : ouvrez `crash.log` (à côté de `app.py`).
+- **Polices manquantes** : vérifiez que le dossier `fonts/` est bien à côté de `app.py`.
+
+## Mises à jour
+
+Au démarrage, l'application cherche une release plus récente. Si elle en trouve une, un bandeau propose « Mettre à jour » : le zip est téléchargé depuis les releases de ce dépôt uniquement, son empreinte SHA-256 est vérifiée, l'ancienne version est copiée dans `_backup/`, puis l'application redémarre. Rien ne se fait sans votre clic.
+
+## Polices
+
+Italiana, Crimson Pro et Geist Mono (dossier `fonts/`), sous licence SIL Open Font License.

@@ -1,0 +1,4 @@
+__pycache__/
+crash.log
+_backup/
+dist/
