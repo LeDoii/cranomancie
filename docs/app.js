@@ -480,7 +480,7 @@ function cardInfo(name) {
 }
 // ---------------------------------------------------------------- direct link: postimg.cc through a small relay (relay/worker.js), after an explicit confirmation
 // The relay keeps the postimg API key secret. Set RELAY_URL once the worker is deployed (see relay/README_RELAY.md); while empty, the button stays hidden.
-const RELAY_URL = "https://cranomancie-relay.dorianbocquet-idb.workers.dev";
+const RELAY_URL = "https://cranomancie-relay.ledoii.workers.dev";
 async function uploadViaRelay(blob, filename) {
   const response = await fetch(`${RELAY_URL}?name=${encodeURIComponent(filename.replace(/\.png$/i, ""))}`, { method: "POST", headers: { "Content-Type": "image/png" }, body: blob });
   let data = {}; try { data = await response.json(); } catch (e) { /* not JSON */ }

@@ -469,4 +469,4 @@ window.CRANO_DATA = {
  },
  "me_synthesis_prefix": "conclut sa lecture : "
 };
-window.CRANO_VERSION = "2.8.2";
+window.CRANO_VERSION = "2.8.3";
