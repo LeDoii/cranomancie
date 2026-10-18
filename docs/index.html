@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRANOMANCIE 2000 — Oswald Bald</title>
+<meta name="description" content="Lecture du crâne chauve selon Oswald Bald : trois axes, trois jets, une conclusion. Projet de joueur, contenu inventé.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<button id="btn-reset" class="hud-reset" title="Efface les trois tirages et recommence">↺ Réinitialiser les tirages</button>
+<button id="btn-hud" class="hud-toggle" aria-pressed="false" title="Masquer l’interface pour ne voir que le décor (touche H). Ensuite : molette = zoom, glisser ou flèches = se déplacer, double-clic ou 0 = réinitialiser">👁 Masquer l’interface</button>
+<div class="room-blur" aria-hidden="true"></div>
+<div class="room" aria-hidden="true"></div>
+<div class="veil" aria-hidden="true"></div>
+
+<header>
+  <canvas id="title" aria-label="CRANOMANCIE 2000"></canvas>
+  <div class="bar">
+    <button id="btn-random-all" class="btn">Tout tirer au hasard</button>
+    <button id="tab-reading" class="btn tab active">Lecture des axes</button>
+    <button id="tab-signs" class="btn tab">Bibliothèque des signes</button>
+    <span class="settings">
+      <button id="btn-settings" class="btn" aria-haspopup="true" aria-expanded="false">⚙ Réglages</button>
+      <div class="settings-panel panel strong" id="settings-panel" role="dialog" aria-label="Réglages" hidden>
+        <div class="caption">FORMAT</div>
+        <label class="switch"><input type="checkbox" id="opt-me" checked><span class="track"></span><span class="txt">Format /me <small>(le jeu ajoute « l'individu »)</small></span></label>
+        <div class="caption">POLARITÉ</div>
+        <label class="switch"><input type="checkbox" id="opt-manual"><span class="track"></span><span class="txt">Polarité manuelle <small>(jet fait par un autre joueur)</small></span></label>
+        <div class="caption">AMBIANCE</div>
+        <label class="switch"><input type="checkbox" id="opt-anim" checked><span class="track"></span><span class="txt">Salle animée <small>(flammes, lumière)</small></span></label>
+        <div class="caption">MUSIQUE</div>
+        <span class="music-wrap"><span class="music"><button id="btn-music" class="btn" aria-pressed="false" title="Musique de fond (coupée par défaut)">🔇 Musique</button><input id="vol" type="range" min="0" max="100" value="20" aria-label="Volume de la musique"></span><a class="pmms-link" href="https://files.catbox.moe/o59iyw.mp3" target="_blank" rel="noopener noreferrer" title="Lien direct (mp3, 4 min 51) à coller dans le PMMS de FiveM">🎧 Lien PMMS (FiveM)</a></span>
+      </div>
+    </span>
+  </div>
+</header>
+
+<main>
+  <section id="view-reading" class="view">
+    <div class="axes" id="axes"></div>
+    <div class="conclusion panel strong" id="conclusion">
+      <div class="concl-head">
+        <span class="caption">CONCLUSION</span>
+        <button id="btn-big" class="btn small" hidden>⤢ Agrandir</button>
+      </div>
+      <div id="concl-rows"></div>
+      <div class="concl-actions" id="concl-actions" hidden>
+        <button id="btn-copy-all" class="btn">Tout copier (une ligne)</button>
+        <button id="btn-export" class="btn export">📇 Exporter la carte</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="view-signs" class="view" hidden>
+    <div class="search-row">
+      <label for="search" class="muted">Rechercher</label>
+      <input id="search" type="search" autocomplete="off" placeholder="15, ligne brisée, ambition…">
+      <span id="count" class="muted"></span>
+    </div>
+    <p class="muted hint">Numéro (15), signe, mot-clé ou définition. Clic ou flèches : détail et modification (✎ = personnalisé) ; Échap : fermer.</p>
+    <div class="library">
+      <div class="signs-grid" id="signs-grid"></div>
+      <aside class="drawer panel strong" id="drawer" hidden></aside>
+    </div>
+  </section>
+</main>
+
+<div class="big" id="big" hidden>
+  <div class="big-top"><span class="caption">CONCLUSION</span><button id="btn-big-close" class="btn">⤡ Réduire</button></div>
+  <div id="big-rows"></div>
+</div>
+
+<footer>Cranomancie : contenu inventé (guide d'Oswald Bald), projet de joueur sans lien officiel avec le serveur. <span id="version"></span></footer>
+
+<div class="modal" id="export-modal" role="dialog" aria-modal="true" aria-labelledby="export-title" hidden>
+  <div class="modal-card panel strong">
+    <div class="modal-head"><h2 id="export-title">Exporter la carte</h2><button id="export-close" class="btn small" aria-label="Fermer">✕</button></div>
+    <div class="modal-body">
+      <canvas id="card-preview" aria-label="Aperçu de la carte"></canvas>
+      <form id="export-form" class="export-form" autocomplete="off">
+        <label class="cap" for="export-name">NOM DE LA PERSONNE</label>
+        <input id="export-name" type="text" maxlength="40" placeholder="Prénom Nom" required>
+        <div class="cap">FORMAT</div>
+        <div class="seg" role="radiogroup" aria-label="Format d’export">
+          <label><input type="radio" name="export-format" value="png" checked><span>PNG</span></label>
+          <label><input type="radio" name="export-format" value="pdf"><span>PDF</span></label>
+        </div>
+        <p class="m" id="export-hint">Carte « <span id="export-tpl"></span> » (selon le nombre de signes favorables).</p>
+        <div class="actions"><button type="submit" class="btn go" id="export-go" disabled>Exporter</button><button type="button" class="btn" id="export-copy" disabled title="Copie la carte (PNG) dans le presse-papiers, pour la coller dans Discord ou un autre programme">📋 Copier l’image</button><button type="button" class="btn" id="export-link" disabled title="Envoie la carte en PNG vers un hébergeur d’images et donne un lien direct">🔗 Lien direct</button><button type="button" class="btn" id="export-cancel">Annuler</button></div>
+        <div class="linkbox" id="linkbox" hidden>
+          <div id="linkbox-confirm">
+            <p><strong>L’image sera envoyée sur postimg.cc</strong> (hébergeur public, via un relais du site). Elle montrera le nom saisi et les trois signes, et sera visible par toute personne qui a le lien.</p>
+            <p>Pour que l’image reste disponible durablement, il est <strong>conseillé d’utiliser <a href="https://img.elixirrp.fr" target="_blank" rel="noopener noreferrer">https://img.elixirrp.fr</a></strong> avec le PNG exporté.</p>
+            <div class="actions"><button type="button" class="btn go" id="link-send">Envoyer quand même</button><button type="button" class="btn" id="link-cancel">Annuler</button></div>
+          </div>
+          <div id="linkbox-status" hidden></div>
+          <div id="linkbox-done" hidden>
+            <div class="cap">LIEN DIRECT</div>
+            <div class="linkrow"><input id="link-url" type="text" readonly aria-label="Lien direct"><button type="button" class="btn go" id="link-copy">Copier</button></div>
+            <p class="warn">⚠ Lien public. Pour maintenir l’image disponible, <a href="https://img.elixirrp.fr" target="_blank" rel="noopener noreferrer">img.elixirrp.fr</a> reste conseillé.</p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<audio id="bgm" loop preload="none"><source src="music.ogg" type="audio/ogg"><source src="music.mp3" type="audio/mpeg"></audio>
+<script src="data.js"></script>
+<script src="card.js"></script>
+<script src="ambiance.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
